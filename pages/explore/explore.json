@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "补水森林",
+  "usingComponents": {
+    "page-status-strip": "/components/page-status-strip/page-status-strip"
+  }
+}

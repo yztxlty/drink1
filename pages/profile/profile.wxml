@@ -1,0 +1,90 @@
+<!-- pages/profile/profile.wxml -->
+<scroll-view class="scrollarea" scroll-y>
+  <view class="container profile-page">
+    <page-status-strip
+      tone="{{statusBar.tone}}"
+      title="{{statusBar.title}}"
+      subtitle="{{statusBar.subtitle}}"
+      metricValue="{{statusBar.metricValue}}"
+      metricLabel="{{statusBar.metricLabel}}"
+      actionLabel="{{statusBar.actionLabel}}"
+      bindaction="syncData"
+    />
+
+    <view class="profile-hero glass-card">
+      <view class="hero-watermark"></view>
+      <view class="user-info-section">
+        <view class="avatar-group">
+          <view class="avatar-lg">
+            <image wx:if="{{profile.avatarUrl}}" class="avatar-image" src="{{profile.avatarUrl}}" mode="aspectFill" />
+            <text wx:else class="avatar-fallback">{{profileInitial}}</text>
+          </view>
+          <view class="edit-btn" bindtap="goEditProfile">编辑</view>
+        </view>
+        <view class="profile-meta">
+          <text class="display-name">{{profile.nickName}}</text>
+          <text class="badge-role">补水档案</text>
+          <text class="profile-desc">{{profile.motto}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="stats-row glass-card">
+      <view class="stat-unit">
+        <text class="val">{{summary.streakDays}}</text>
+        <text class="unit">连续天数</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-unit">
+        <text class="val">{{summary.unlockedMedals}}</text>
+        <text class="unit">勋章数</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-unit">
+        <text class="val">{{summary.totalLiters}}</text>
+        <text class="unit">累计补水(L)</text>
+      </view>
+    </view>
+
+    <view class="badge-preview glass-card">
+      <view class="record-head">
+        <view>
+          <text class="section-title">勋章橱窗</text>
+          <text class="section-subtitle">最近解锁与即将获得的成就</text>
+        </view>
+      </view>
+      <view class="badge-list">
+        <view class="badge-card" wx:for="{{badges}}" wx:key="id">
+          <text class="badge-emoji">{{item.icon}}</text>
+          <text class="badge-name">{{item.name}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="menu-group glass-card">
+      <view
+        class="menu-line {{index === menuItems.length - 1 ? 'last' : ''}}"
+        wx:for="{{menuItems}}"
+        wx:for-item="item"
+        wx:for-index="index"
+        wx:key="key"
+        bindtap="navigateToMenu"
+        data-key="{{item.key}}"
+      >
+        <view class="menu-texts">
+          <text class="lab">{{item.title}}</text>
+          <text class="sub">{{item.subtitle}}</text>
+        </view>
+        <view class="menu-side">
+          <view wx:if="{{item.badge}}" class="notif-dot"></view>
+          <text class="arr">></text>
+        </view>
+      </view>
+    </view>
+
+    <view class="actions-footer">
+      <button class="primary-btn sync-btn" bindtap="syncData">同步补水资料</button>
+      <view class="logout-text" bindtap="logout">退出登录</view>
+    </view>
+  </view>
+</scroll-view>

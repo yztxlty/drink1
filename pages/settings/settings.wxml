@@ -1,0 +1,75 @@
+<!-- pages/settings/settings.wxml -->
+<scroll-view class="scrollarea" scroll-y>
+  <view class="container">
+    <view class="hero-card glass-card">
+      <text class="hero-kicker">{{copy.heroKicker}}</text>
+      <text class="hero-title">{{copy.heroTitle}}</text>
+      <view class="hero-chip-row">
+        <view class="hero-chip">目标 {{settings.dailyGoal}}ml</view>
+        <view class="hero-chip">本地保存</view>
+      </view>
+    </view>
+
+    <view class="section-card glass-card">
+      <view class="section-head">
+        <text class="section-title">{{copy.dailyTargetTitle}}</text>
+        <text class="section-value">{{settings.dailyGoal}}ml</text>
+      </view>
+      <slider
+        min="800"
+        max="3500"
+        step="100"
+        value="{{settings.dailyGoal}}"
+        bindchange="onGoalChange"
+        activeColor="#005f9b"
+        backgroundColor="#dfe3e6"
+        block-size="22"
+      />
+      <view class="range-row">
+        <text>800ml</text>
+        <text>3500ml</text>
+      </view>
+    </view>
+
+    <view class="section-card glass-card">
+      <view class="section-head">
+        <text class="section-title">{{copy.reminderTitle}}</text>
+        <text class="section-note">按你的日程自动提醒</text>
+      </view>
+      <view class="reminder-list">
+        <view class="reminder-item" wx:for="{{reminderItems}}" wx:key="key">
+          <view class="reminder-copy">
+            <text class="reminder-label">{{item.label}}</text>
+            <text class="reminder-hint">{{item.hint}}</text>
+          </view>
+          <switch
+            checked="{{settings.reminders[item.key]}}"
+            data-key="{{item.key}}"
+            bindchange="onToggleReminder"
+            color="#005f9b"
+          />
+        </view>
+      </view>
+    </view>
+
+    <view class="section-card glass-card">
+      <view class="section-head">
+        <text class="section-title">{{copy.quickTitle}}</text>
+        <text class="section-note">点击可增减常用容量</text>
+      </view>
+      <view class="chip-grid">
+        <view
+          class="amount-chip {{settings.quickAmounts.indexOf(item) > -1 ? 'active' : ''}}"
+          wx:for="{{[150,250,300,500,750]}}"
+          wx:key="*this"
+          data-amount="{{item}}"
+          bindtap="selectAmount"
+        >
+          {{item}}ml
+        </view>
+      </view>
+    </view>
+
+    <button class="primary-btn save-btn" bindtap="saveSettings">{{copy.saveLabel}}</button>
+  </view>
+</scroll-view>

@@ -1,0 +1,43 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/home/home",
+    "pages/explore/explore",
+    "pages/profile/profile",
+    "pages/profile/edit",
+    "pages/settings/settings",
+    "pages/medals/medals",
+    "pages/privacy/privacy",
+    "pages/about/about"
+  ],
+  "window": {
+    "backgroundColor": "#f5f7f9",
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTitleText": "喝水了吗",
+    "navigationBarTextStyle": "black",
+    "navigationStyle": "custom"
+  },
+  "tabBar": {
+    "color": "#9a9d9f",
+    "selectedColor": "#005f9b",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/explore/explore",
+        "text": "森林"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

@@ -1,0 +1,51 @@
+<!-- pages/login/login.wxml -->
+<scroll-view class="scrollarea" scroll-y>
+  <view class="container login-page">
+    <view class="floating-orb orb-left"></view>
+    <view class="floating-orb orb-right"></view>
+
+    <view class="login-hero">
+      <view class="eyebrow">{{copy.eyebrow}}</view>
+      <view class="illustration-area">
+        <view class="organic-blob"></view>
+        <view class="halo halo-a"></view>
+        <view class="halo halo-b"></view>
+        <view class="droplet-breathing floating-droplet">
+          <view class="droplet-core"></view>
+        </view>
+      </view>
+
+      <view class="text-content">
+        <text class="h1">{{copy.heroTitle}}</text>
+        <text class="p">{{copy.heroDesc}}</text>
+      </view>
+    </view>
+
+    <view class="login-panel glass-card">
+      <view class="panel-row">
+        <text class="panel-title">{{copy.panelTitle}}</text>
+        <text class="panel-desc">{{copy.panelDesc}}</text>
+      </view>
+
+      <button class="primary-btn wx-btn" bindtap="onLogin" loading="{{loading}}" disabled="{{loading || !agreed}}">{{copy.actionLabel}}</button>
+
+      <view class="privacy-note">
+        <checkbox-group bindchange="onAgreementChange">
+          <label class="privacy-row">
+            <checkbox class="privacy-check" value="agree" checked="{{agreed}}" />
+            <text class="privacy-txt">{{copy.privacyLabel}}</text>
+            <text class="link" bindtap="goPrivacy">{{copy.privacyLink}}</text>
+            <text class="privacy-txt">{{copy.privacyJoiner}}</text>
+            <text class="link" bindtap="goPrivacy">{{copy.policyLink}}</text>
+          </label>
+        </checkbox-group>
+      </view>
+    </view>
+
+    <view class="login-footer">
+      <view class="footer-chip">{{copy.footerChips[0]}}</view>
+      <view class="footer-chip">{{copy.footerChips[1]}}</view>
+      <view class="footer-chip">{{copy.footerChips[2]}}</view>
+    </view>
+  </view>
+</scroll-view>

@@ -1,0 +1,45 @@
+<!-- pages/medals/medals.wxml -->
+<scroll-view class="scrollarea" scroll-y>
+  <view class="container">
+    <view class="hero-card glass-card">
+      <text class="hero-kicker">{{copy.heroKicker}}</text>
+      <text class="hero-title">{{copy.heroTitle}}</text>
+      <view class="hero-chip-row">
+        <view class="hero-chip">已解锁 {{summary.unlockedCount}}</view>
+        <view class="hero-chip">总计 {{summary.totalCount}}</view>
+      </view>
+    </view>
+
+    <view class="tab-row">
+      <view
+        class="tab-item {{activeTab === item.key ? 'active' : ''}}"
+        wx:for="{{tabs}}"
+        wx:key="key"
+        data-key="{{item.key}}"
+        bindtap="switchTab"
+      >
+        {{item.label}}
+      </view>
+    </view>
+
+    <view class="medal-list">
+      <view
+        class="medal-card glass-card {{item.unlocked ? 'unlocked' : 'locked'}}"
+        wx:for="{{visibleMedals}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="viewMedal"
+      >
+        <view class="medal-icon">{{item.icon}}</view>
+        <view class="medal-copy">
+          <view class="medal-title-row">
+            <text class="medal-title">{{item.title}}</text>
+            <text class="medal-status">{{item.unlocked ? '已解锁' : '未解锁'}}</text>
+          </view>
+          <text class="medal-desc">{{item.desc}}</text>
+          <text class="medal-progress">{{item.progressText}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</scroll-view>

@@ -1,0 +1,113 @@
+/* pages/settings/settings.wxss */
+.container {
+  padding: 80rpx 40rpx 160rpx;
+  background: var(--surface);
+  min-height: 100vh;
+}
+
+.hero-card,
+.section-card {
+  margin-bottom: 32rpx;
+}
+
+.hero-kicker {
+  display: block;
+  font-size: 22rpx;
+  color: var(--primary);
+  font-weight: 700;
+  letter-spacing: 2rpx;
+  text-transform: uppercase;
+}
+
+.hero-title {
+  display: block;
+  font-size: 40rpx;
+  line-height: 1.35;
+  font-weight: 800;
+  margin-top: 16rpx;
+}
+
+.hero-chip-row,
+.chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-top: 24rpx;
+}
+
+.hero-chip,
+.amount-chip {
+  background: var(--surface-container-low);
+  color: var(--on-surface);
+  border-radius: 9999rpx;
+  padding: 14rpx 24rpx;
+  font-size: 24rpx;
+}
+
+.amount-chip.active {
+  background: rgba(0, 95, 155, 0.1);
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 24rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.section-value {
+  font-size: 28rpx;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.section-note,
+.range-row,
+.reminder-hint {
+  color: var(--on-surface-variant);
+  font-size: 22rpx;
+}
+
+.range-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16rpx;
+}
+
+.reminder-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.reminder-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface-container-low);
+  border-radius: var(--radius-lg);
+  padding: 24rpx 28rpx;
+}
+
+.reminder-copy {
+  display: flex;
+  flex-direction: column;
+}
+
+.reminder-label {
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.save-btn {
+  width: 100% !important;
+  margin-top: 16rpx;
+  padding: 30rpx 0 !important;
+}

@@ -1,0 +1,87 @@
+/* pages/privacy/privacy.wxss */
+.container {
+  padding: 80rpx 40rpx 160rpx;
+  background: var(--surface);
+  min-height: 100vh;
+}
+
+.hero-card,
+.policy-card,
+.ack-card {
+  margin-bottom: 32rpx;
+}
+
+.hero-kicker {
+  display: block;
+  font-size: 22rpx;
+  color: var(--primary);
+  font-weight: 700;
+  letter-spacing: 2rpx;
+  text-transform: uppercase;
+}
+
+.hero-title {
+  display: block;
+  font-size: 40rpx;
+  line-height: 1.35;
+  font-weight: 800;
+  margin-top: 16rpx;
+}
+
+.hero-chip-row {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 24rpx;
+}
+
+.hero-chip {
+  background: var(--surface-container-low);
+  border-radius: 9999rpx;
+  padding: 14rpx 24rpx;
+  font-size: 24rpx;
+}
+
+.policy-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.policy-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 700;
+  margin-bottom: 12rpx;
+}
+
+.policy-body,
+.ack-sub {
+  display: block;
+  color: var(--on-surface-variant);
+  font-size: 24rpx;
+  line-height: 1.7;
+}
+
+.ack-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24rpx;
+}
+
+.ack-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 700;
+  margin-bottom: 6rpx;
+}
+
+.copy-btn {
+  width: 100% !important;
+  margin-top: 24rpx;
+  padding: 28rpx 0 !important;
+  background: transparent !important;
+  color: var(--primary) !important;
+  border: 1rpx solid var(--surface-container-high) !important;
+  border-radius: var(--radius-lg);
+}

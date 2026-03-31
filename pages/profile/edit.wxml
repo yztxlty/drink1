@@ -1,0 +1,57 @@
+<!-- pages/profile/edit.wxml -->
+<scroll-view class="scrollarea" scroll-y>
+  <view class="container edit-page">
+    <view class="hero-card glass-card">
+      <text class="hero-kicker">{{copy.heroKicker}}</text>
+      <text class="hero-title">{{fromLogin ? copy.heroTitleFromLogin : copy.heroTitleNormal}}</text>
+      <view class="hero-chip-row">
+        <view class="hero-chip">{{profileSourceLabel}}</view>
+        <view class="hero-chip">本地保存</view>
+      </view>
+    </view>
+
+    <view class="editor-card glass-card">
+      <view class="avatar-editor">
+        <view class="avatar-preview">
+          <image wx:if="{{form.avatarUrl}}" class="avatar-image" src="{{form.avatarUrl}}" mode="aspectFill" />
+          <text wx:else class="avatar-fallback">{{avatarInitial}}</text>
+        </view>
+        <view class="avatar-actions">
+          <button class="ghost-btn mini-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">微信头像</button>
+          <button class="ghost-btn mini-btn" bindtap="chooseLocalAvatar">相册选择</button>
+        </view>
+      </view>
+
+      <view class="field-group">
+        <text class="field-label">昵称</text>
+        <input
+          class="text-input"
+          value="{{form.nickName}}"
+          placeholder="请输入昵称"
+          bindinput="onNickInput"
+        />
+      </view>
+
+      <view class="field-group">
+        <text class="field-label">{{copy.fieldLabel}}</text>
+        <textarea
+          class="text-area"
+          value="{{form.motto}}"
+          placeholder="{{copy.fieldPlaceholder}}"
+          maxlength="60"
+          auto-height
+          bindinput="onMottoInput"
+        />
+      </view>
+
+      <view class="hint-text">
+        手动设置后，个人页会优先展示你编辑的头像和昵称。再次登录微信不会覆盖这些自定义内容。
+      </view>
+
+      <view class="action-row">
+        <button class="ghost-btn action-btn" bindtap="restoreWechatProfile">{{copy.restoreLabel}}</button>
+        <button class="primary-btn action-btn" bindtap="saveProfile" loading="{{saving}}" disabled="{{saving}}">{{actionLabel}}</button>
+      </view>
+    </view>
+  </view>
+</scroll-view>

@@ -1,0 +1,15 @@
+{
+  "libVersion": "3.15.0",
+  "projectname": "drink1",
+  "setting": {
+    "urlCheck": false,
+    "coverView": true,
+    "lazyloadPlaceholderEnable": false,
+    "skylineRenderEnable": false,
+    "preloadBackgroundData": false,
+    "autoAudits": false,
+    "showShadowRootInWxmlPanel": true,
+    "compileHotReLoad": true,
+    "bigPackageSizeSupport": true
+  }
+}

@@ -1,0 +1,31 @@
+<!-- pages/privacy/privacy.wxml -->
+<scroll-view class="scrollarea" scroll-y>
+  <view class="container">
+    <view class="hero-card glass-card">
+      <text class="hero-kicker">{{copy.heroKicker}}</text>
+      <text class="hero-title">{{copy.heroTitle}}</text>
+      <view class="hero-chip-row">
+        <view class="hero-chip">{{agreed ? copy.readChip : copy.notReadChip}}</view>
+        <view class="hero-chip">仅本机可见</view>
+      </view>
+    </view>
+
+    <view class="policy-list">
+      <view class="policy-card glass-card" wx:for="{{sections}}" wx:key="title">
+        <text class="policy-title">{{item.title}}</text>
+        <text class="policy-body">{{item.body}}</text>
+      </view>
+    </view>
+
+    <view class="ack-card glass-card">
+      <view class="ack-row">
+        <view>
+          <text class="ack-title">{{copy.ackTitle}}</text>
+          <text class="ack-sub">{{copy.ackSub}}</text>
+        </view>
+        <switch checked="{{agreed}}" bindchange="toggleAgree" color="#005f9b" />
+      </view>
+      <button class="ghost-btn copy-btn" bindtap="copySummary">复制摘要</button>
+    </view>
+  </view>
+</scroll-view>

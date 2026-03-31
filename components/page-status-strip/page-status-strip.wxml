@@ -1,0 +1,20 @@
+<view class="page-status-strip page-status-strip--{{tone}} {{extClass}}">
+  <view class="page-status-strip__header">
+    <view class="page-status-strip__copy">
+      <text class="page-status-strip__title">{{title}}</text>
+      <text class="page-status-strip__subtitle">{{subtitle}}</text>
+    </view>
+    <view
+      wx:if="{{actionLabel}}"
+      class="page-status-strip__action {{actionDisabled ? 'is-disabled' : ''}}"
+      bindtap="onActionTap"
+    >
+      <text>{{actionLabel}}</text>
+    </view>
+  </view>
+
+  <view class="page-status-strip__metric">
+    <text class="page-status-strip__metric-value">{{metricValue}}</text>
+    <text class="page-status-strip__metric-label">{{metricLabel}}</text>
+  </view>
+</view>

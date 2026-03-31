@@ -1,0 +1,130 @@
+/* pages/medals/medals.wxss */
+.container {
+  padding: 80rpx 40rpx 160rpx;
+  background: var(--surface);
+  min-height: 100vh;
+}
+
+.hero-card {
+  margin-bottom: 32rpx;
+}
+
+.hero-kicker {
+  display: block;
+  font-size: 22rpx;
+  color: var(--primary);
+  font-weight: 700;
+  letter-spacing: 2rpx;
+  text-transform: uppercase;
+}
+
+.hero-title {
+  display: block;
+  font-size: 40rpx;
+  line-height: 1.35;
+  font-weight: 800;
+  margin-top: 16rpx;
+}
+
+.hero-chip-row {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 24rpx;
+}
+
+.hero-chip,
+.tab-item {
+  border-radius: 9999rpx;
+  font-size: 24rpx;
+}
+
+.hero-chip {
+  background: var(--surface-container-low);
+  color: var(--on-surface);
+  padding: 14rpx 24rpx;
+}
+
+.tab-row {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 32rpx;
+}
+
+.tab-item {
+  padding: 14rpx 24rpx;
+  background: var(--surface-container-low);
+  color: var(--on-surface-variant);
+}
+
+.tab-item.active {
+  background: rgba(0, 95, 155, 0.1);
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.medal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.medal-card {
+  display: flex;
+  gap: 24rpx;
+  align-items: center;
+  margin-bottom: 0;
+}
+
+.medal-card.unlocked {
+  background: linear-gradient(135deg, rgba(0, 95, 155, 0.08), rgba(0, 241, 253, 0.06));
+}
+
+.medal-card.locked {
+  opacity: 0.84;
+}
+
+.medal-icon {
+  width: 104rpx;
+  height: 104rpx;
+  border-radius: 50%;
+  background: var(--surface-container-low);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48rpx;
+  flex: none;
+}
+
+.medal-copy {
+  flex: 1;
+}
+
+.medal-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.medal-title {
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.medal-status,
+.medal-desc,
+.medal-progress {
+  font-size: 22rpx;
+}
+
+.medal-status {
+  color: var(--primary);
+  flex: none;
+}
+
+.medal-desc,
+.medal-progress {
+  display: block;
+  color: var(--on-surface-variant);
+  margin-top: 8rpx;
+}

@@ -1,0 +1,372 @@
+/* pages/explore/explore.wxss */
+.forest-page {
+  gap: 24rpx;
+  padding-bottom: 56rpx;
+}
+
+.forest-summary,
+.overview-head,
+.forest-metrics,
+.forest-status-card,
+.forest-row {
+  display: flex;
+}
+
+.forest-summary {
+  justify-content: space-between;
+  align-items: center;
+  padding: 28rpx 28rpx 28rpx 24rpx;
+}
+
+.oxygen-info {
+  display: flex;
+  align-items: center;
+}
+
+.oxygen-icon {
+  width: 92rpx;
+  height: 92rpx;
+  border-radius: 30rpx;
+  background: linear-gradient(135deg, var(--primary), var(--primary-container));
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: 800;
+  box-shadow: 0 16rpx 30rpx rgba(0, 95, 155, 0.15);
+}
+
+.oxygen-meta {
+  display: flex;
+  flex-direction: column;
+  margin-left: 18rpx;
+}
+
+.oxygen-value {
+  font-size: 40rpx;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.oxygen-label {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: var(--on-surface-variant);
+}
+
+.summary-pill,
+.summary-caption {
+  padding: 12rpx 18rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  font-weight: 700;
+}
+
+.summary-pill {
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--on-surface);
+}
+
+.summary-pill-primary {
+  background: rgba(71, 166, 247, 0.14);
+  color: var(--primary);
+}
+
+.summary-pill-success {
+  background: rgba(91, 253, 140, 0.16);
+  color: var(--tertiary);
+}
+
+.summary-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.summary-caption {
+  padding: 0;
+  color: var(--on-surface-variant);
+}
+
+.forest-summary {
+  justify-content: space-between;
+  align-items: center;
+  padding: 28rpx 28rpx 24rpx;
+}
+
+.forest-stage {
+  position: relative;
+  height: 660rpx;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  background:
+    linear-gradient(180deg, rgba(71, 166, 247, 0.24), rgba(255, 255, 255, 0.72) 44%, rgba(91, 253, 140, 0.18) 100%),
+    #eef7fb;
+  box-shadow: var(--shadow-card);
+}
+
+.stage-glow {
+  position: absolute;
+  top: 80rpx;
+  left: 50%;
+  width: 320rpx;
+  height: 200rpx;
+  margin-left: -160rpx;
+  background: rgba(255, 255, 255, 0.46);
+  filter: blur(40rpx);
+}
+
+.grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0, 95, 155, 0.06) 1rpx, transparent 1rpx),
+    linear-gradient(90deg, rgba(0, 95, 155, 0.06) 1rpx, transparent 1rpx);
+  background-size: 48rpx 48rpx;
+}
+
+.terrain {
+  position: absolute;
+  bottom: -70rpx;
+  width: 60%;
+  height: 240rpx;
+  border-radius: 50%;
+  background: linear-gradient(180deg, rgba(91, 253, 140, 0.76), rgba(0, 106, 47, 0.84));
+  filter: blur(2rpx);
+}
+
+.terrain-left {
+  left: -12%;
+}
+
+.terrain-right {
+  right: -12%;
+  height: 220rpx;
+}
+
+.plants-layout {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.plant-spot {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.plant-0 {
+  left: 130rpx;
+  bottom: 160rpx;
+}
+
+.plant-1 {
+  right: 150rpx;
+  bottom: 210rpx;
+}
+
+.plant-aura {
+  position: absolute;
+  bottom: 40rpx;
+  width: 180rpx;
+  height: 70rpx;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.09);
+  filter: blur(18rpx);
+}
+
+.plant-entity {
+  position: relative;
+  width: 170rpx;
+  height: 210rpx;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.leaf {
+  position: absolute;
+  bottom: 44rpx;
+  width: 68rpx;
+  border-radius: 999rpx 999rpx 0 999rpx;
+  background: linear-gradient(180deg, #7df4a8, #0b8f49);
+  box-shadow: inset 0 -10rpx 20rpx rgba(5, 88, 45, 0.25);
+}
+
+.leaf-left {
+  left: 24rpx;
+  height: 120rpx;
+  transform: rotate(-28deg);
+}
+
+.leaf-center {
+  width: 74rpx;
+  height: 148rpx;
+  border-radius: 999rpx;
+  transform: translateY(-16rpx);
+}
+
+.leaf-right {
+  right: 24rpx;
+  height: 110rpx;
+  transform: rotate(30deg) scaleX(-1);
+}
+
+.plant-name {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  font-weight: 700;
+  color: var(--on-surface);
+}
+
+.lv-badge {
+  margin-top: 10rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 999rpx;
+  background: rgba(12, 53, 82, 0.66);
+  color: #ffffff;
+  font-size: 20rpx;
+  font-weight: 700;
+}
+
+.achievement-overview,
+.forest-log {
+  padding-top: 36rpx;
+}
+
+.overview-head {
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.forest-metrics {
+  gap: 18rpx;
+  margin-top: 24rpx;
+}
+
+.metric-block {
+  flex: 1;
+  padding: 20rpx 18rpx;
+  border-radius: 28rpx;
+  background: rgba(71, 166, 247, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.metric-value {
+  font-size: 34rpx;
+  font-weight: 800;
+  color: var(--primary);
+  line-height: 1.1;
+}
+
+.metric-label {
+  margin-top: 8rpx;
+  font-size: 20rpx;
+  color: var(--on-surface-variant);
+}
+
+.forest-status-card {
+  flex-direction: column;
+  gap: 18rpx;
+  margin-top: 22rpx;
+  padding: 22rpx;
+  border-radius: 30rpx;
+  background: rgba(243, 246, 248, 0.88);
+}
+
+.forest-row {
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20rpx;
+}
+
+.forest-row-label {
+  font-size: 22rpx;
+  color: var(--on-surface-variant);
+}
+
+.forest-row-value {
+  flex: 1;
+  text-align: right;
+  font-size: 24rpx;
+  font-weight: 700;
+  color: var(--on-surface);
+}
+
+.forest-row-value-compact {
+  font-size: 20rpx;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.plant-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  margin-top: 28rpx;
+}
+
+.plant-row {
+  align-items: center;
+  gap: 18rpx;
+}
+
+.plant-token {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 20rpx;
+  background: linear-gradient(180deg, #7df4a8, #119b52);
+}
+
+.plant-row-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.plant-row-name {
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.plant-row-desc {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: var(--on-surface-variant);
+  line-height: 1.7;
+}
+
+.bottom-space {
+  height: 56rpx;
+}
+
+.stage-caption {
+  position: absolute;
+  left: 28rpx;
+  right: 28rpx;
+  bottom: 24rpx;
+  padding: 16rpx 20rpx;
+  border-radius: 24rpx;
+  background: rgba(12, 53, 82, 0.72);
+  color: #ffffff;
+  font-size: 22rpx;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.forest-action-btn {
+  width: 100% !important;
+  margin-top: 24rpx;
+}
+
+.summary-pill-primary,
+.summary-pill-success,
+.forest-action-btn {
+  box-shadow: var(--shadow-card);
+}

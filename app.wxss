@@ -1,0 +1,198 @@
+/** app.wxss **/
+page {
+  --primary: #005f9b;
+  --primary-deep: #08446d;
+  --primary-container: #47a6f7;
+  --secondary: #00666b;
+  --secondary-container: #00f1fd;
+  --tertiary: #006a2f;
+  --tertiary-container: #5bfd8c;
+  --surface: #f5f7f9;
+  --surface-dim: #edf2f5;
+  --surface-container-low: #eef1f3;
+  --surface-container: #e5e9eb;
+  --surface-container-high: #dfe3e6;
+  --surface-container-highest: #d9dde0;
+  --surface-container-lowest: #ffffff;
+  --on-surface: #2c2f31;
+  --on-surface-variant: #595c5e;
+  --on-primary: #ecf3ff;
+  --success: #1ea672;
+  --warning: #f3a33a;
+  --danger: #eb5757;
+  --shadow-soft: 0 24rpx 72rpx rgba(0, 71, 115, 0.08);
+  --shadow-card: 0 20rpx 60rpx rgba(22, 56, 79, 0.06);
+  --radius-2xl: 120rpx;
+  --radius-xl: 72rpx;
+  --radius-lg: 52rpx;
+  --radius-md: 36rpx;
+  --radius-sm: 24rpx;
+
+  min-height: 100%;
+  background:
+    radial-gradient(circle at top left, rgba(71, 166, 247, 0.16), transparent 34%),
+    radial-gradient(circle at top right, rgba(0, 241, 253, 0.18), transparent 28%),
+    linear-gradient(180deg, #f8fbfd 0%, var(--surface) 24%, #f2f5f7 100%);
+  color: var(--on-surface);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 28rpx;
+  line-height: 1.55;
+}
+
+page,
+scroll-view,
+view,
+text,
+button {
+  box-sizing: border-box;
+}
+
+.scrollarea {
+  height: 100vh;
+}
+
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: calc(env(safe-area-inset-top) + 24rpx) 32rpx 48rpx;
+}
+
+.brand-gradient {
+  background: linear-gradient(135deg, var(--primary) 12%, var(--primary-container) 88%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  padding: 10rpx 20rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.68);
+  color: var(--primary);
+  font-size: 22rpx;
+  font-weight: 600;
+  letter-spacing: 1rpx;
+  box-shadow: 0 10rpx 24rpx rgba(71, 166, 247, 0.08);
+}
+
+.glass-card {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.88);
+  border-radius: var(--radius-xl);
+  padding: 40rpx;
+  box-shadow: var(--shadow-card);
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.52), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+
+.soft-panel {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.76));
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.section-title {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 700;
+  color: var(--on-surface);
+}
+
+.section-subtitle {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: var(--on-surface-variant);
+}
+
+.droplet-breathing {
+  width: 220rpx;
+  height: 220rpx;
+  background: linear-gradient(160deg, rgba(71, 166, 247, 0.9), rgba(0, 241, 253, 0.78));
+  border-radius: 46% 54% 52% 48% / 54% 41% 59% 46%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: breathing 4.2s ease-in-out infinite;
+  box-shadow: 0 32rpx 80rpx rgba(71, 166, 247, 0.28);
+}
+
+.droplet-breathing::before {
+  content: '';
+  position: absolute;
+  top: 18%;
+  left: 24%;
+  width: 36rpx;
+  height: 76rpx;
+  background: rgba(255, 255, 255, 0.48);
+  border-radius: 999rpx;
+  transform: rotate(-32deg);
+}
+
+.primary-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  min-height: 108rpx;
+  padding: 0 48rpx;
+  border: none;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-container) 100%);
+  color: #ffffff;
+  font-size: 30rpx;
+  font-weight: 700;
+  box-shadow: 0 20rpx 40rpx rgba(0, 95, 155, 0.18);
+}
+
+.primary-btn::after {
+  border: none;
+}
+
+.ghost-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 108rpx;
+  border-radius: var(--radius-lg);
+  border: 2rpx solid rgba(171, 173, 175, 0.26);
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--on-surface-variant);
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.ghost-btn::after {
+  border: none;
+}
+
+.floating-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(10rpx);
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+@keyframes breathing {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    border-radius: 46% 54% 52% 48% / 54% 41% 59% 46%;
+  }
+  50% {
+    transform: translateY(-8rpx) scale(1.04);
+    border-radius: 56% 44% 50% 50% / 46% 56% 44% 54%;
+  }
+}

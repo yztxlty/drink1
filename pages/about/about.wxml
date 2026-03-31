@@ -1,0 +1,25 @@
+<!-- pages/about/about.wxml -->
+<scroll-view class="scrollarea" scroll-y>
+  <view class="container">
+    <view class="hero-card glass-card">
+      <text class="hero-kicker">{{copy.heroKicker}}</text>
+      <text class="hero-title">{{copy.appName}}</text>
+      <view class="hero-chip-row">
+        <view class="hero-chip">Version {{version}}</view>
+        <view class="hero-chip">本地存储优先</view>
+      </view>
+    </view>
+
+    <view class="section-card glass-card">
+      <text class="section-title">{{copy.productTitle}}</text>
+      <text class="section-body">{{copy.productBody}}</text>
+    </view>
+
+    <view class="section-card glass-card">
+      <text class="section-title">{{copy.feedbackTitle}}</text>
+      <text class="section-body">{{copy.feedbackBody}}</text>
+      <button class="ghost-btn action-btn" bindtap="copyContact">{{copy.copyLabel}}</button>
+      <button class="ghost-btn action-btn" bindtap="goPrivacy">{{copy.privacyLabel}}</button>
+    </view>
+  </view>
+</scroll-view>

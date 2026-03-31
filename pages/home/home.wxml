@@ -1,0 +1,138 @@
+<!-- pages/home/home.wxml -->
+<scroll-view class="scrollarea" scroll-y bindscrolltolower="loadMoreTodayRecords" lower-threshold="120">
+  <view class="container home-page">
+    <view wx:if="{{showGoalCelebration}}" class="celebration-banner">
+      <text class="celebration-emoji">🎉</text>
+      <view class="celebration-copy">
+        <text class="celebration-title">今日达标</text>
+        <text class="celebration-desc">{{celebrationMessage}}</text>
+      </view>
+    </view>
+
+    <page-status-strip
+      tone="{{statusBar.tone}}"
+      title="{{statusBar.title}}"
+      subtitle="{{statusBar.subtitle}}"
+      metricValue="{{statusBar.metricValue}}"
+      metricLabel="{{statusBar.metricLabel}}"
+      actionLabel="{{statusBar.actionLabel}}"
+      bindaction="logWater"
+    />
+
+    <view class="home-hero glass-card">
+      <view class="main-visual">
+        <view class="tidal-ring state-{{todayStatus.level}}">
+          <view class="ring-fill" style="background: conic-gradient(var(--primary) 0deg {{progressDegree}}deg, rgba(255,255,255,0.32) {{progressDegree}}deg 360deg);"></view>
+          <view class="ring-track"></view>
+          <view class="inner-content">
+            <view class="shield-icon">{{todayStatus.badgeText}}</view>
+            <view class="intake-display">
+              <text class="intake-value">{{intake}}</text>
+              <text class="intake-target">/ {{dailyTarget}} ml</text>
+            </view>
+            <text class="quality-label">补水质量：{{qualityLabel}} · {{progressPercent}}%</text>
+            <text class="status-note">{{todayStatus.hint}}</text>
+          </view>
+        </view>
+
+        <view class="goal-chip state-{{todayStatus.level}}">
+          <text class="goal-chip-title">今日目标</text>
+          <text class="goal-chip-value">{{todayGoalText}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="home-action-card glass-card">
+      <view class="action-head">
+        <view class="action-copy">
+          <text class="section-title">快速补水</text>
+          <text class="section-subtitle">先选容量，再一键记录</text>
+        </view>
+        <view class="action-summary">
+          <text class="action-summary-value">{{selectedCup}} ml</text>
+          <text class="action-summary-label">当前容量</text>
+        </view>
+      </view>
+
+      <scroll-view
+        class="quick-pick-scroll"
+        scroll-x
+        scroll-with-animation
+        show-scrollbar="{{false}}"
+        scroll-into-view="{{selectedCupScrollId}}"
+      >
+        <view class="quick-pick">
+          <view id="quick-pick-custom" class="pick-item pick-custom" bindtap="openCustomAmountPanel">
+            <text class="cup-icon">自定义</text>
+            <text class="cup-label">50ml 起</text>
+          </view>
+          <view
+            id="quick-pick-item-{{item}}"
+            class="pick-item {{selectedCup == item ? 'active' : ''}}"
+            wx:for="{{quickAmounts}}"
+            wx:key="*this"
+            bindtap="selectCup"
+            data-val="{{item}}"
+          >
+            <text class="cup-icon">{{item}}ml</text>
+          </view>
+        </view>
+      </scroll-view>
+
+      <view wx:if="{{customPanelVisible}}" class="custom-panel">
+        <view class="custom-panel-head">
+          <view>
+            <text class="section-title">自定义容量</text>
+            <text class="section-subtitle">50ml 的倍数，最小 50ml</text>
+          </view>
+          <text class="custom-close" bindtap="closeCustomAmountPanel">×</text>
+        </view>
+        <view class="custom-stepper">
+          <view class="step-btn" bindtap="decreaseCustomAmount">-</view>
+          <view class="custom-amount">{{customAmount}} ml</view>
+          <view class="step-btn" bindtap="increaseCustomAmount">+</view>
+        </view>
+        <text class="custom-hint">保存后会成为你的下次快捷容量</text>
+        <button class="primary-btn custom-confirm-btn" bindtap="confirmCustomAmount">保存并记录</button>
+      </view>
+
+      <button class="primary-btn log-btn home-log-btn" bindtap="logWater">
+        <text class="plus">+</text>
+        <text>{{statusBar.actionLabel}}</text>
+      </button>
+    </view>
+
+    <view class="record-card glass-card home-history">
+      <view class="record-head">
+        <view>
+          <text class="section-title">{{recordTitle}}</text>
+          <text class="section-subtitle">按时间查看你的补水节奏</text>
+        </view>
+        <view class="record-summary">{{todayRecordCount}} 次</view>
+      </view>
+
+      <view wx:if="{{visibleTodayRecords.length}}" class="record-list">
+        <view class="record-row" wx:for="{{visibleTodayRecords}}" wx:key="id">
+          <view class="record-dot"></view>
+          <view class="record-meta">
+            <text class="record-amount">{{item.amountDisplay}}</text>
+            <text class="record-time">{{item.timeDisplay}}</text>
+          </view>
+          <view class="record-progress">
+            <view class="record-progress-fill" style="{{item.progressStyle}}"></view>
+          </view>
+        </view>
+      </view>
+      <view wx:else class="record-empty">
+        <view class="record-empty-icon">滴</view>
+        <text class="record-empty-title">今天还没有记录</text>
+        <text class="record-empty-desc">先补第一杯水，再来看看进度变化。</text>
+      </view>
+      <view class="record-footer">
+        <text class="record-footer-hint">{{recordLoadHint}}</text>
+      </view>
+    </view>
+
+    <view class="bottom-space"></view>
+  </view>
+</scroll-view>

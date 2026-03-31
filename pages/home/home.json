@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "今日补水",
+  "usingComponents": {
+    "page-status-strip": "/components/page-status-strip/page-status-strip"
+  }
+}

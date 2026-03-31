@@ -1,0 +1,106 @@
+<!-- pages/explore/explore.wxml -->
+<scroll-view class="scrollarea" scroll-y>
+  <view class="container forest-page">
+    <page-status-strip
+      tone="{{statusBar.tone}}"
+      title="{{statusBar.title}}"
+      subtitle="{{statusBar.subtitle}}"
+      metricValue="{{statusBar.metricValue}}"
+      metricLabel="{{statusBar.metricLabel}}"
+      actionLabel="{{statusBar.actionLabel}}"
+      bindaction="navHome"
+    />
+
+    <view class="forest-summary soft-panel">
+      <view class="oxygen-info">
+        <view class="oxygen-icon">O2</view>
+        <view class="oxygen-meta">
+          <text class="oxygen-value">{{oxygenValue}}</text>
+          <text class="oxygen-label">森林氧气浓度</text>
+        </view>
+      </view>
+      <view class="summary-stack">
+        <view class="summary-pill summary-pill-primary">{{collectionLabel}}</view>
+        <text class="summary-caption">藏品进度</text>
+      </view>
+      <view class="summary-stack">
+        <view class="summary-pill summary-pill-success">Lv.{{forestLevel}}</view>
+        <text class="summary-caption">森林等级</text>
+      </view>
+    </view>
+
+    <view class="forest-stage">
+      <view class="stage-glow"></view>
+      <view class="grid-bg"></view>
+      <view class="terrain terrain-left"></view>
+      <view class="terrain terrain-right"></view>
+
+      <view class="plants-layout">
+        <view class="plant-spot plant-{{index}}" wx:for="{{plants}}" wx:key="id">
+          <view class="plant-aura"></view>
+          <view class="plant-entity">
+            <view class="leaf leaf-left"></view>
+            <view class="leaf leaf-center"></view>
+            <view class="leaf leaf-right"></view>
+          </view>
+          <text class="plant-name">{{item.name}}</text>
+          <text class="lv-badge">LV.{{item.level}}</text>
+        </view>
+      </view>
+
+      <view class="stage-caption">{{forestStatusHint}}</view>
+    </view>
+
+    <view class="achievement-overview glass-card">
+      <view class="overview-head">
+        <view>
+          <text class="section-title">守护进度</text>
+          <text class="section-subtitle">氧气、藏品和勋章会随着补水持续增长</text>
+        </view>
+      </view>
+
+      <view class="forest-metrics">
+        <view class="metric-block">
+          <text class="metric-value">{{oxygenValue}}</text>
+          <text class="metric-label">当前氧气</text>
+        </view>
+        <view class="metric-block">
+          <text class="metric-value">{{collectionProgress}}%</text>
+          <text class="metric-label">藏品进度</text>
+        </view>
+        <view class="metric-block">
+          <text class="metric-value">{{unlockedMedalCount}}</text>
+          <text class="metric-label">已解锁勋章</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="forest-log glass-card">
+      <view class="overview-head">
+        <view>
+          <text class="section-title">今日守护</text>
+          <text class="section-subtitle">{{reminderText}}</text>
+        </view>
+      </view>
+
+      <view class="forest-status-card">
+        <view class="forest-row">
+          <text class="forest-row-label">今日总补水</text>
+          <text class="forest-row-value">{{todayTotal}} ml</text>
+        </view>
+        <view class="forest-row">
+          <text class="forest-row-label">今日还需补水</text>
+          <text class="forest-row-value">{{todayRemaining}} ml</text>
+        </view>
+        <view class="forest-row">
+          <text class="forest-row-label">守护提示</text>
+          <text class="forest-row-value forest-row-value-compact">{{forestStatusHint}}</text>
+        </view>
+      </view>
+
+      <button class="primary-btn forest-action-btn" bindtap="navHome">{{statusBar.actionLabel}}</button>
+    </view>
+
+    <view class="bottom-space"></view>
+  </view>
+</scroll-view>
