@@ -38,7 +38,7 @@ expectIncludes('pages/about/about.wxml', '{{copy.productTitle}}', 'About page sh
 expectIncludes('pages/medals/medals.wxml', '{{copy.heroTitle}}', 'Medals page should render its hero title from shared copy');
 
 expectIncludes('pages/profile/profile.wxml', 'wx:for="{{menuItems}}"', 'Profile page menu should be data-driven');
-expectIncludes('pages/profile/profile.wxml', '{{statusBar.actionLabel}}', 'Profile sync button should reuse the shared action label');
+expectIncludes('pages/profile/profile.wxml', '{{copy.actionLabel}}', 'Profile export button should reuse the shared action label');
 expectIncludes('pages/home/home.wxml', '{{statusBar.actionLabel}}', 'Home quick action should reuse the shared action label');
 expectIncludes('pages/explore/explore.wxml', '{{statusBar.actionLabel}}', 'Forest quick action should reuse the shared action label');
 

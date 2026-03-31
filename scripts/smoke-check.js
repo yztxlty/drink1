@@ -256,7 +256,9 @@ function checkAuxiliaryCopy() {
 
 function checkProfileDashboardAndMedalAssets() {
   const profileWxml = fs.readFileSync(path.join(root, 'pages/profile/profile.wxml'), 'utf8');
+  const profileWxss = fs.readFileSync(path.join(root, 'pages/profile/profile.wxss'), 'utf8');
   const medalsWxml = fs.readFileSync(path.join(root, 'pages/medals/medals.wxml'), 'utf8');
+  const medalsWxss = fs.readFileSync(path.join(root, 'pages/medals/medals.wxss'), 'utf8');
   const settingsWxml = fs.readFileSync(path.join(root, 'pages/settings/settings.wxml'), 'utf8');
   const { MEDAL_DEFINITIONS } = require(path.join(root, 'utils/medals'));
   const store = require(path.join(root, 'utils/store'));
@@ -275,6 +277,9 @@ function checkProfileDashboardAndMedalAssets() {
   }
   if (!medalsWxml.includes('class="medal-gallery"')) {
     addFailure('Medal page should render the medal gallery');
+  }
+  if (profileWxss.includes('grayscale(') || medalsWxss.includes('grayscale(')) {
+    addFailure('Medal showcase should keep icons in highlighted mode instead of grayscale');
   }
   if (!settingsWxml.includes('bindchange="onCupChange"')) {
     addFailure('Settings page should expose the default cup slider');

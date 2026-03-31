@@ -7,8 +7,7 @@
       subtitle="{{statusBar.subtitle}}"
       metricValue="{{statusBar.metricValue}}"
       metricLabel="{{statusBar.metricLabel}}"
-      actionLabel="{{statusBar.actionLabel}}"
-      bindaction="syncData"
+      actionLabel=""
     />
 
     <view class="profile-hero glass-card">
@@ -55,9 +54,62 @@
       <view class="record-head">
         <view>
           <text class="section-title">补水分析</text>
-          <text class="section-subtitle">近 7 天表现与长期趋势</text>
+          <text class="section-subtitle">立体水晶柱 + 趋势折线，支持周月年切换</text>
         </view>
         <view class="analysis-tag">{{analysis.dominantPeriod}}时段更活跃</view>
+      </view>
+
+      <view class="analysis-period-tabs">
+        <view
+          class="analysis-period-tab {{analysisPeriod === item.key ? 'active' : ''}}"
+          wx:for="{{analysisPeriodTabs}}"
+          wx:key="key"
+          data-key="{{item.key}}"
+          bindtap="switchAnalysisPeriod"
+        >
+          {{item.label}}
+        </view>
+      </view>
+
+      <view class="analysis-chart-wrap">
+        <view class="analysis-chart-head">
+          <text class="analysis-chart-title">补水趋势</text>
+          <text class="analysis-chart-meta">建议线 {{analysisChart.targetMl}}ml</text>
+        </view>
+
+        <view class="analysis-chart">
+          <view class="analysis-chart-grid"></view>
+          <view class="analysis-target-line" style="bottom: {{analysisChart.targetPercent}}%;">
+            <text class="analysis-target-label">{{analysisChart.targetMl}}ml</text>
+          </view>
+
+          <view class="analysis-line-layer">
+            <view
+              class="analysis-line-segment"
+              wx:for="{{analysisChart.lineSegments}}"
+              wx:for-index="index"
+              wx:key="index"
+              style="{{item.style}}"
+            ></view>
+            <view
+              class="analysis-line-point"
+              wx:for="{{analysisChart.linePoints}}"
+              wx:for-index="index"
+              wx:key="index"
+              style="{{item.style}}"
+            ></view>
+          </view>
+
+          <view class="analysis-bars-layer">
+            <view class="analysis-bar-item" wx:for="{{analysisChart.points}}" wx:key="key">
+              <text class="analysis-bar-amount">{{item.amountLabel}}</text>
+              <view class="analysis-bar-shell">
+                <view class="analysis-bar-crystal" style="height: {{item.barPercent}}%;"></view>
+              </view>
+              <text class="analysis-bar-label">{{item.label}}</text>
+            </view>
+          </view>
+        </view>
       </view>
 
       <view class="analysis-grid">

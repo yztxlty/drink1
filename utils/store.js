@@ -211,9 +211,95 @@ function formatExportTimestamp(isoString) {
     .replace('Z', '');
 }
 
+function getDateByOffset(offsetDays) {
+  const date = new Date();
+  date.setHours(0, 0, 0, 0);
+  date.setDate(date.getDate() + offsetDays);
+  return date;
+}
+
+function getDailyAmount(daily, dateKey) {
+  return Number((daily[dateKey] && daily[dateKey].total) || 0);
+}
+
+function buildWeekSeries(daily, dailyTarget) {
+  const labels = ['日', '一', '二', '三', '四', '五', '六'];
+  const points = [];
+
+  for (let offset = 6; offset >= 0; offset -= 1) {
+    const date = getDateByOffset(-offset);
+    const dateKey = getDateKey(date);
+    const amount = getDailyAmount(daily, dateKey);
+    points.push({
+      label: `周${labels[date.getDay()]}`,
+      dateKey,
+      amount,
+      completionRate: dailyTarget > 0 ? amount / dailyTarget : 0
+    });
+  }
+
+  return points;
+}
+
+function buildMonthSeries(daily, dailyTarget) {
+  const points = [];
+
+  for (let group = 5; group >= 0; group -= 1) {
+    let totalAmount = 0;
+    const offsets = [];
+    for (let offset = group * 5 + 4; offset >= group * 5; offset -= 1) {
+      const date = getDateByOffset(-offset);
+      const dateKey = getDateKey(date);
+      offsets.push(date);
+      totalAmount += getDailyAmount(daily, dateKey);
+    }
+
+    const startDate = offsets[0];
+    const endDate = offsets[offsets.length - 1];
+    const averageAmount = Math.round(totalAmount / 5);
+    points.push({
+      label: `${startDate.getMonth() + 1}/${startDate.getDate()}-${endDate.getDate()}`,
+      amount: averageAmount,
+      completionRate: dailyTarget > 0 ? averageAmount / dailyTarget : 0
+    });
+  }
+
+  return points;
+}
+
+function buildYearSeries(daily, dailyTarget) {
+  const points = [];
+  const now = new Date();
+  const dailyEntries = Object.keys(daily || {});
+
+  for (let offset = 11; offset >= 0; offset -= 1) {
+    const monthStart = new Date(now.getFullYear(), now.getMonth() - offset, 1);
+    const nextMonthStart = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 1);
+    const daysInMonth = Math.max(1, new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0).getDate());
+    let totalAmount = 0;
+
+    dailyEntries.forEach((dateKey) => {
+      const date = toDate(dateKey);
+      if (date >= monthStart && date < nextMonthStart) {
+        totalAmount += getDailyAmount(daily, dateKey);
+      }
+    });
+
+    const averageAmount = Math.round(totalAmount / daysInMonth);
+    points.push({
+      label: `${monthStart.getMonth() + 1}月`,
+      amount: averageAmount,
+      completionRate: dailyTarget > 0 ? averageAmount / dailyTarget : 0
+    });
+  }
+
+  return points;
+}
+
 function buildProfileAnalysis(state) {
   const totals = state.hydration.totals || {};
   const daily = state.hydration.daily || {};
+  const dailyTarget = Number(state.settings.dailyTarget) || DEFAULT_DAILY_TARGET;
   const totalAmount = Number(totals.totalAmount) || 0;
   const totalRecords = Number(totals.totalRecords) || 0;
   const activeDays = Number(totals.activeDays) || 0;
@@ -261,6 +347,15 @@ function buildProfileAnalysis(state) {
     recentCompletion: `${recentCompletedDays}/7`,
     recentTotal: `${(recentTotalAmount / 1000).toFixed(1)}L`,
     dominantPeriod,
+    targetMl: dailyTarget,
+    chart: {
+      targetMl: dailyTarget,
+      periods: {
+        week: buildWeekSeries(daily, dailyTarget),
+        month: buildMonthSeries(daily, dailyTarget),
+        year: buildYearSeries(daily, dailyTarget)
+      }
+    },
     summary,
     suggestion
   };
@@ -553,7 +648,7 @@ function getProfileViewModel() {
       : (profile.profileSource === 'wechat' ? '微信资料与进度已同步' : '资料与进度保持同步'),
     metricValue: `${state.hydration.streak.current}`,
     metricLabel: '连续天数',
-    actionLabel: COPY.profile.actionLabel
+    actionLabel: ''
   };
 
   return {

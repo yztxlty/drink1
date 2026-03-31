@@ -23,8 +23,31 @@ Page({
       recentCompletion: '0/7',
       recentTotal: '0.0L',
       dominantPeriod: '全天',
+      targetMl: 2000,
+      chart: {
+        targetMl: 2000,
+        periods: {
+          week: [],
+          month: [],
+          year: []
+        }
+      },
       summary: '补水分析会在这里显示。',
       suggestion: '开始记录后，这里会给出更有针对性的建议。'
+    },
+    analysisPeriod: 'week',
+    analysisPeriodTabs: [
+      { key: 'week', label: '周' },
+      { key: 'month', label: '月' },
+      { key: 'year', label: '年' }
+    ],
+    analysisChart: {
+      points: [],
+      targetMl: 2000,
+      targetPercent: 0,
+      maxAmount: 2000,
+      lineSegments: [],
+      linePoints: []
     },
     badges: [],
     profile: {
@@ -71,6 +94,76 @@ Page({
     })
   },
 
+  switchAnalysisPeriod(e) {
+    const { key } = e.currentTarget.dataset
+    if (!key || key === this.data.analysisPeriod) {
+      return
+    }
+
+    this.setData({
+      analysisPeriod: key,
+      analysisChart: this.buildAnalysisChart(this.data.analysis, key)
+    })
+  },
+
+  buildAnalysisChart(analysis, period) {
+    const safeAnalysis = analysis || {}
+    const chart = safeAnalysis.chart || {}
+    const targetMl = Number(chart.targetMl || safeAnalysis.targetMl || this.data.settings.dailyTarget || 2000)
+    const periods = chart.periods || {}
+    const rawPoints = Array.isArray(periods[period]) ? periods[period] : []
+    const maxAmount = Math.max(
+      targetMl,
+      ...rawPoints.map((item) => Number(item.amount) || 0),
+      1
+    )
+    const points = rawPoints.map((item, index) => {
+      const amount = Math.max(0, Number(item.amount) || 0)
+      const percent = Math.min((amount / maxAmount) * 100, 100)
+      return {
+        key: `${period}_${index}`,
+        ...item,
+        amount,
+        barPercent: percent.toFixed(2),
+        amountLabel: `${amount}ml`,
+        completionPercentLabel: `${Math.round((Number(item.completionRate) || 0) * 100)}%`
+      }
+    })
+
+    const linePoints = points.map((item, index) => {
+      const x = points.length <= 1 ? 50 : (index * 100) / (points.length - 1)
+      return {
+        style: `left: calc(${x}% - 7rpx); bottom: calc(${item.barPercent}% - 7rpx);`
+      }
+    })
+
+    const lineSegments = []
+    for (let index = 0; index < points.length - 1; index += 1) {
+      const current = points[index]
+      const next = points[index + 1]
+      const x1 = points.length <= 1 ? 50 : (index * 100) / (points.length - 1)
+      const x2 = points.length <= 1 ? 50 : ((index + 1) * 100) / (points.length - 1)
+      const y1 = Number(current.barPercent)
+      const y2 = Number(next.barPercent)
+      const dx = x2 - x1
+      const dy = y2 - y1
+      const length = Math.sqrt(dx * dx + dy * dy)
+      const angle = (Math.atan2(dy, dx) * 180) / Math.PI
+      lineSegments.push({
+        style: `left: ${x1}%; bottom: ${y1}%; width: ${length}%; transform: rotate(${angle}deg);`
+      })
+    }
+
+    return {
+      points,
+      targetMl,
+      maxAmount,
+      targetPercent: Math.min(((targetMl / maxAmount) * 100), 100).toFixed(2),
+      linePoints,
+      lineSegments
+    }
+  },
+
   refreshSummary() {
     const viewModel = this.store ? this.store.getProfileViewModel() : {
       badges: [],
@@ -88,6 +181,15 @@ Page({
         recentCompletion: '0/7',
         recentTotal: '0.0L',
         dominantPeriod: '全天',
+        targetMl: 2000,
+        chart: {
+          targetMl: 2000,
+          periods: {
+            week: [],
+            month: [],
+            year: []
+          }
+        },
         summary: '补水分析会在这里显示。',
         suggestion: '开始记录后，这里会给出更有针对性的建议。'
       },
@@ -107,6 +209,7 @@ Page({
       profile,
       profileInitial: profileName ? profileName.slice(0, 1) : '补',
       analysis: viewModel.analysis || this.data.analysis,
+      analysisChart: this.buildAnalysisChart(viewModel.analysis || this.data.analysis, this.data.analysisPeriod),
       settings: viewModel.settings,
       statusBar: viewModel.statusBar,
       summary: {

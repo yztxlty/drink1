@@ -224,8 +224,8 @@
 }
 
 .medal-card.locked {
-  opacity: 0.66;
-  filter: grayscale(0.18);
+  opacity: 0.94;
+  border-color: rgba(97, 186, 239, 0.56);
 }
 
 .medal-copy {

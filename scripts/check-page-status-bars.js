@@ -47,7 +47,7 @@ assertStatusBar(store.getForestViewModel(), 'forest');
 assert.strictEqual(store.getHomeViewModel().statusBar.title, '今日补水', 'Home status bar title should use the shared hydration copy');
 assert.strictEqual(store.getHomeViewModel().statusBar.actionLabel, '记录补水', 'Home status bar action should use the shared hydration copy');
 assert.strictEqual(store.getProfileViewModel().statusBar.title, '我的补水档案', 'Profile status bar title should use the shared hydration copy');
-assert.strictEqual(store.getProfileViewModel().statusBar.actionLabel, COPY.profile.actionLabel, 'Profile status bar action should use the shared hydration copy');
+assert.strictEqual(store.getProfileViewModel().statusBar.actionLabel, '', 'Profile status bar action should stay hidden');
 assert.strictEqual(store.getForestViewModel().statusBar.title, '补水森林', 'Forest status bar title should use the shared hydration copy');
 assert.strictEqual(store.getForestViewModel().statusBar.actionLabel, '去补水', 'Forest status bar action should use the shared hydration copy');
 

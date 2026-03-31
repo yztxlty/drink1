@@ -202,6 +202,161 @@
   margin-top: 26rpx;
 }
 
+.analysis-period-tabs {
+  display: flex;
+  gap: 14rpx;
+  margin-top: 24rpx;
+}
+
+.analysis-period-tab {
+  padding: 10rpx 20rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  color: var(--on-surface-variant);
+  background: rgba(255, 255, 255, 0.56);
+}
+
+.analysis-period-tab.active {
+  background: linear-gradient(135deg, rgba(0, 95, 155, 0.9), rgba(67, 168, 236, 0.92));
+  color: #ffffff;
+  box-shadow: 0 8rpx 20rpx rgba(0, 95, 155, 0.24);
+}
+
+.analysis-chart-wrap {
+  margin-top: 20rpx;
+  padding: 22rpx 18rpx 18rpx;
+  border-radius: 28rpx;
+  background: radial-gradient(circle at 20% 12%, rgba(255, 255, 255, 0.7), rgba(223, 240, 251, 0.52));
+  border: 1rpx solid rgba(255, 255, 255, 0.72);
+}
+
+.analysis-chart-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.analysis-chart-title {
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.analysis-chart-meta {
+  font-size: 20rpx;
+  color: var(--primary);
+}
+
+.analysis-chart {
+  position: relative;
+  height: 280rpx;
+  margin-top: 18rpx;
+  border-radius: 24rpx;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(215, 238, 253, 0.42));
+}
+
+.analysis-chart-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to top, rgba(0, 95, 155, 0.06) 1rpx, transparent 1rpx),
+    linear-gradient(to right, rgba(0, 95, 155, 0.05) 1rpx, transparent 1rpx);
+  background-size: 100% 25%, 12.5% 100%;
+}
+
+.analysis-target-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 0;
+  border-top: 2rpx dashed rgba(0, 95, 155, 0.78);
+  z-index: 4;
+}
+
+.analysis-target-label {
+  position: absolute;
+  right: 6rpx;
+  top: -30rpx;
+  font-size: 18rpx;
+  color: var(--primary);
+  background: rgba(255, 255, 255, 0.74);
+  border-radius: 999rpx;
+  padding: 4rpx 10rpx;
+}
+
+.analysis-line-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.analysis-line-segment {
+  position: absolute;
+  height: 4rpx;
+  transform-origin: left center;
+  background: linear-gradient(90deg, rgba(0, 95, 155, 0.86), rgba(76, 198, 249, 0.92));
+  box-shadow: 0 0 10rpx rgba(0, 95, 155, 0.24);
+  animation: lineGlow 2.6s ease-in-out infinite;
+}
+
+.analysis-line-point {
+  position: absolute;
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 3rpx solid rgba(0, 95, 155, 0.9);
+  box-shadow: 0 0 18rpx rgba(0, 95, 155, 0.36);
+}
+
+.analysis-bars-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 18rpx 8rpx 12rpx;
+  box-sizing: border-box;
+}
+
+.analysis-bar-item {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.analysis-bar-amount {
+  font-size: 18rpx;
+  color: rgba(16, 53, 83, 0.7);
+}
+
+.analysis-bar-shell {
+  width: 62%;
+  height: 72%;
+  display: flex;
+  align-items: flex-end;
+}
+
+.analysis-bar-crystal {
+  width: 100%;
+  min-height: 12rpx;
+  border-radius: 18rpx 18rpx 8rpx 8rpx;
+  background: linear-gradient(180deg, rgba(169, 231, 255, 0.95) 0%, rgba(85, 173, 239, 0.92) 50%, rgba(0, 95, 155, 0.9) 100%);
+  box-shadow: inset -6rpx 0 8rpx rgba(255, 255, 255, 0.34), inset 6rpx 0 10rpx rgba(0, 53, 93, 0.16), 0 8rpx 14rpx rgba(0, 95, 155, 0.2);
+  animation: crystalPulse 2.8s ease-in-out infinite;
+}
+
+.analysis-bar-label {
+  font-size: 18rpx;
+  color: var(--on-surface-variant);
+}
+
 .analysis-item {
   flex: 1;
   padding: 24rpx 18rpx;
@@ -300,9 +455,9 @@
 }
 
 .badge-card.locked {
-  opacity: 0.68;
-  filter: grayscale(0.18);
-  transform: scale(0.98);
+  opacity: 0.96;
+  transform: scale(1);
+  border-color: rgba(94, 183, 237, 0.62);
 }
 
 .badge-name {
@@ -316,6 +471,33 @@
 .badge-progress {
   font-size: 20rpx;
   color: var(--on-surface-variant);
+}
+
+@keyframes crystalPulse {
+  0% {
+    filter: brightness(1) saturate(1);
+  }
+  50% {
+    filter: brightness(1.08) saturate(1.1);
+  }
+  100% {
+    filter: brightness(1) saturate(1);
+  }
+}
+
+@keyframes lineGlow {
+  0% {
+    opacity: 0.68;
+    box-shadow: 0 0 6rpx rgba(0, 95, 155, 0.16);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 14rpx rgba(0, 95, 155, 0.36);
+  }
+  100% {
+    opacity: 0.68;
+    box-shadow: 0 0 6rpx rgba(0, 95, 155, 0.16);
+  }
 }
 
 .export-hint-row {
