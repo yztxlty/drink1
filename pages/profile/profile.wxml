@@ -53,12 +53,14 @@
           <text class="section-subtitle">最近解锁与即将获得的成就</text>
         </view>
       </view>
-      <view class="badge-list">
-        <view class="badge-card" wx:for="{{badges}}" wx:key="id">
-          <text class="badge-emoji">{{item.icon}}</text>
-          <text class="badge-name">{{item.name}}</text>
+      <scroll-view class="badge-scroll-view" scroll-x enable-flex enhanced show-scrollbar="{{false}}">
+        <view class="badge-list">
+          <view class="badge-card {{item.unlocked ? '' : 'locked'}}" wx:for="{{badges}}" wx:key="id">
+            <image class="badge-icon-img" src="{{item.icon}}" mode="aspectFit" />
+            <text class="badge-name">{{item.name}}</text>
+          </view>
         </view>
-      </view>
+      </scroll-view>
     </view>
 
     <view class="menu-group glass-card">
