@@ -1,37 +1,6 @@
 const app = getApp()
 const { COPY } = require('../../utils/copy')
 
-const MEDAL_CATALOG = [
-  {
-    id: 'first_drop',
-    title: '首杯奖励',
-    icon: '💧',
-    desc: '完成第一次补水记录即可解锁',
-    condition: '记录 1 次补水'
-  },
-  {
-    id: 'three_day',
-    title: '三日连饮',
-    icon: '🌱',
-    desc: '连续 3 天保持补水节奏',
-    condition: '连续 3 天'
-  },
-  {
-    id: 'seven_day',
-    title: '七日守护',
-    icon: '🏅',
-    desc: '连续一周养成稳定补水习惯',
-    condition: '连续 7 天'
-  },
-  {
-    id: 'monthly_goal',
-    title: '月度达标',
-    icon: '🏆',
-    desc: '累计完成高频补水目标，形成长期习惯',
-    condition: '累计达标 30 次'
-  }
-]
-
 Page({
   data: {
     copy: COPY.medals,
@@ -43,10 +12,12 @@ Page({
     activeTab: 'all',
     summary: {
       unlockedCount: 0,
-      totalCount: MEDAL_CATALOG.length
+      totalCount: 0,
+      completionRate: '0%'
     },
     medals: [],
-    visibleMedals: []
+    visibleMedals: [],
+    selectedMedal: null
   },
 
   onShow() {
@@ -55,26 +26,56 @@ Page({
   },
 
   loadMedals() {
-    const profileViewModel = this.store ? this.store.getProfileViewModel() : { badges: [] }
-    const badges = profileViewModel.badges || []
-    const medals = MEDAL_CATALOG.map((item) => {
-      const badge = badges.find((entry) => entry.id === item.id) || {}
+    const viewModel = this.store ? this.store.getProfileViewModel() : { badges: [], stats: {} }
+    const medals = (viewModel.badges || []).map((item) => {
+      const remaining = Math.max(Number(item.progressTarget || 0) - Number(item.progressCurrent || 0), 0)
+
       return {
-        ...item,
-        unlocked: Boolean(badge.unlocked),
-        progressText: badge.progressText || this.getProgressText(item.id, {}),
-        progressRate: badge.completionRate || 0
+        id: item.id,
+        title: item.name,
+        icon: item.icon,
+        desc: item.description,
+        condition: item.unlocked
+          ? `已达成 ${item.progressText}`
+          : `还差 ${remaining} 次`,
+        unlocked: Boolean(item.unlocked),
+        progressText: item.unlocked
+          ? `已点亮 · ${item.progressText}`
+          : `进度 ${item.progressText}`,
+        progressCurrent: Number(item.progressCurrent) || 0,
+        progressTarget: Number(item.progressTarget) || 0,
+        progressPercent: Number(item.progressPercent) || 0,
+        category: item.category,
+        accentLabel: item.unlocked ? '已获得' : '待解锁'
       }
     })
 
+    const visibleMedals = this.filterMedals(medals, this.data.activeTab)
+    const selectedMedal = this.resolveSelectedMedal(medals, visibleMedals)
+
     this.setData({
       medals,
-      visibleMedals: this.filterMedals(medals, this.data.activeTab),
+      visibleMedals,
+      selectedMedal,
       summary: {
         unlockedCount: medals.filter((item) => item.unlocked).length,
-        totalCount: medals.length
+        totalCount: medals.length,
+        completionRate: medals.length ? `${Math.round((medals.filter((item) => item.unlocked).length / medals.length) * 100)}%` : '0%'
       }
     })
+  },
+
+  resolveSelectedMedal(medals, visibleMedals) {
+    if (!medals.length) {
+      return null
+    }
+
+    const current = this.data.selectedMedal
+    const nextId = current && visibleMedals.find((item) => item.id === current.id)
+      ? current.id
+      : (visibleMedals[0] && visibleMedals[0].id) || medals[0].id
+
+    return medals.find((item) => item.id === nextId) || medals[0]
   },
 
   filterMedals(medals, tab) {
@@ -85,31 +86,13 @@ Page({
     })
   },
 
-  getProgressText(id, profile) {
-    const streakDays = Number(profile.streakDays) || 0
-    const totalRecords = Number(profile.totalRecords) || 0
-    const completedDays = Number(profile.completedDays) || 0
-
-    if (id === 'first_drop') {
-      return totalRecords >= 1 ? '已完成' : `还差 ${1 - totalRecords} 次`
-    }
-    if (id === 'three_day') {
-      return streakDays >= 3 ? '已完成' : `还差 ${3 - streakDays} 天`
-    }
-    if (id === 'seven_day') {
-      return streakDays >= 7 ? '已完成' : `还差 ${7 - streakDays} 天`
-    }
-    if (id === 'monthly_goal') {
-      return completedDays >= 30 ? '已完成' : `还差 ${30 - completedDays} 天`
-    }
-    return '待解锁'
-  },
-
   switchTab(e) {
     const { key } = e.currentTarget.dataset
+    const visibleMedals = this.filterMedals(this.data.medals, key)
     this.setData({
       activeTab: key,
-      visibleMedals: this.filterMedals(this.data.medals, key)
+      visibleMedals,
+      selectedMedal: this.resolveSelectedMedal(this.data.medals, visibleMedals)
     })
   },
 
@@ -120,10 +103,8 @@ Page({
       return
     }
 
-    wx.showModal({
-      title: medal.title,
-      content: `${medal.desc}\n\n解锁条件：${medal.condition}`,
-      showCancel: false
+    this.setData({
+      selectedMedal: medal
     })
   }
 })

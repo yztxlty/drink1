@@ -5,6 +5,11 @@
   min-height: 100vh;
 }
 
+.settings-page {
+  display: flex;
+  flex-direction: column;
+}
+
 .hero-card,
 .section-card {
   margin-bottom: 32rpx;
@@ -50,6 +55,10 @@
   font-weight: 700;
 }
 
+.amount-chip.selected {
+  box-shadow: inset 0 0 0 2rpx rgba(0, 95, 155, 0.22);
+}
+
 .section-head {
   display: flex;
   justify-content: space-between;
@@ -73,6 +82,14 @@
 .reminder-hint {
   color: var(--on-surface-variant);
   font-size: 22rpx;
+}
+
+.section-body {
+  display: block;
+  margin-top: 18rpx;
+  color: var(--on-surface-variant);
+  font-size: 24rpx;
+  line-height: 1.7;
 }
 
 .range-row {

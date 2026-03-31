@@ -16,7 +16,8 @@ Page({
   data: {
     copy: COPY.settings,
     settings: DEFAULT_SETTINGS,
-    reminderItems: COPY.settings.reminderItems
+    reminderItems: COPY.settings.reminderItems,
+    quickAmountOptions: [150, 250, 300, 500, 750, 1000]
   },
 
   onShow() {
@@ -54,6 +55,19 @@ Page({
     })
   },
 
+  onCupChange(e) {
+    const selectedCupAmount = Number(e.detail.value)
+    const quickAmounts = this.data.settings.quickAmounts.includes(selectedCupAmount)
+      ? this.data.settings.quickAmounts
+      : [...this.data.settings.quickAmounts, selectedCupAmount].sort((a, b) => a - b)
+
+    this.commitSettings({
+      ...this.data.settings,
+      quickAmounts,
+      selectedCupAmount
+    })
+  },
+
   onToggleReminder(e) {
     const { key } = e.currentTarget.dataset
     const checked = Boolean(e.detail.value)
@@ -69,12 +83,13 @@ Page({
   selectAmount(e) {
     const amount = Number(e.currentTarget.dataset.amount)
     const quickAmounts = this.data.settings.quickAmounts.includes(amount)
-      ? this.data.settings.quickAmounts.filter((item) => item !== amount)
+      ? this.data.settings.quickAmounts
       : [...this.data.settings.quickAmounts, amount].sort((a, b) => a - b)
 
     this.commitSettings({
       ...this.data.settings,
-      quickAmounts
+      quickAmounts,
+      selectedCupAmount: amount
     })
   },
 

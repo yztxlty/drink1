@@ -1,11 +1,12 @@
 <!-- pages/settings/settings.wxml -->
 <scroll-view class="scrollarea" scroll-y>
-  <view class="container">
+  <view class="container settings-page">
     <view class="hero-card glass-card">
       <text class="hero-kicker">{{copy.heroKicker}}</text>
       <text class="hero-title">{{copy.heroTitle}}</text>
       <view class="hero-chip-row">
         <view class="hero-chip">目标 {{settings.dailyGoal}}ml</view>
+        <view class="hero-chip">单次 {{settings.selectedCupAmount}}ml</view>
         <view class="hero-chip">本地保存</view>
       </view>
     </view>
@@ -33,6 +34,47 @@
 
     <view class="section-card glass-card">
       <view class="section-head">
+        <text class="section-title">{{copy.cupTitle}}</text>
+        <text class="section-value">{{settings.selectedCupAmount}}ml</text>
+      </view>
+      <slider
+        min="50"
+        max="1000"
+        step="50"
+        value="{{settings.selectedCupAmount}}"
+        bindchange="onCupChange"
+        activeColor="#005f9b"
+        backgroundColor="#dfe3e6"
+        block-size="22"
+      />
+      <view class="range-row">
+        <text>50ml</text>
+        <text>1000ml</text>
+      </view>
+      <text class="section-note">{{copy.cupNote}}</text>
+    </view>
+
+    <view class="section-card glass-card">
+      <view class="section-head">
+        <text class="section-title">{{copy.quickTitle}}</text>
+        <text class="section-note">点选可切换默认容量</text>
+      </view>
+      <view class="chip-grid">
+        <view
+          class="amount-chip {{settings.quickAmounts.indexOf(item) > -1 ? 'active' : ''}} {{settings.selectedCupAmount === item ? 'selected' : ''}}"
+          wx:for="{{quickAmountOptions}}"
+          wx:key="*this"
+          data-amount="{{item}}"
+          bindtap="selectAmount"
+        >
+          {{item}}ml
+        </view>
+      </view>
+      <text class="section-note">{{copy.sharedHint}}</text>
+    </view>
+
+    <view class="section-card glass-card">
+      <view class="section-head">
         <text class="section-title">{{copy.reminderTitle}}</text>
         <text class="section-note">按你的日程自动提醒</text>
       </view>
@@ -53,21 +95,8 @@
     </view>
 
     <view class="section-card glass-card">
-      <view class="section-head">
-        <text class="section-title">{{copy.quickTitle}}</text>
-        <text class="section-note">点击可增减常用容量</text>
-      </view>
-      <view class="chip-grid">
-        <view
-          class="amount-chip {{settings.quickAmounts.indexOf(item) > -1 ? 'active' : ''}}"
-          wx:for="{{[150,250,300,500,750]}}"
-          wx:key="*this"
-          data-amount="{{item}}"
-          bindtap="selectAmount"
-        >
-          {{item}}ml
-        </view>
-      </view>
+      <text class="section-title">导出说明</text>
+      <text class="section-body">{{copy.exportHint}}</text>
     </view>
 
     <button class="primary-btn save-btn" bindtap="saveSettings">{{copy.saveLabel}}</button>

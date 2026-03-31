@@ -196,6 +196,94 @@ function createMedalContext(derivedHydration) {
   };
 }
 
+function getDateRangeKey(offsetDays) {
+  const date = new Date();
+  date.setHours(0, 0, 0, 0);
+  date.setDate(date.getDate() - offsetDays);
+  return getDateKey(date);
+}
+
+function formatExportTimestamp(isoString) {
+  return isoString
+    .replace(/[-:]/g, '')
+    .replace(/\.\d{3}Z$/, 'Z')
+    .replace('T', '-')
+    .replace('Z', '');
+}
+
+function buildProfileAnalysis(state) {
+  const totals = state.hydration.totals || {};
+  const daily = state.hydration.daily || {};
+  const totalAmount = Number(totals.totalAmount) || 0;
+  const totalRecords = Number(totals.totalRecords) || 0;
+  const activeDays = Number(totals.activeDays) || 0;
+  const streakDays = Number(state.hydration.streak && state.hydration.streak.current) || 0;
+  const averageCup = totalRecords > 0 ? Math.round(totalAmount / totalRecords) : 0;
+  const averageDaily = activeDays > 0 ? Math.round(totalAmount / activeDays) : 0;
+  let recentCompletedDays = 0;
+  let recentTotalAmount = 0;
+  let dominantPeriod = '全天';
+  const morningRecords = Number(totals.morningRecords) || 0;
+  const nightRecords = Number(totals.nightRecords) || 0;
+
+  for (let offset = 0; offset < 7; offset += 1) {
+    const entry = daily[getDateRangeKey(offset)];
+    if (entry) {
+      recentTotalAmount += Number(entry.total) || 0;
+      if (entry.completed) {
+        recentCompletedDays += 1;
+      }
+    }
+  }
+
+  if (morningRecords > nightRecords) {
+    dominantPeriod = '早晨';
+  } else if (nightRecords > morningRecords) {
+    dominantPeriod = '夜间';
+  }
+
+  const summary = streakDays >= 7
+    ? '你的补水习惯已经稳定成型，当前节奏值得继续保持。'
+    : (recentCompletedDays >= 4
+      ? '最近一周的补水节奏比较稳定，建议继续保持当前安排。'
+      : '补水节奏还在形成中，建议固定几个容易执行的时间点。');
+
+  const suggestion = averageCup < Number(state.settings.selectedCupAmount || 0)
+    ? `把单次容量固定在 ${state.settings.selectedCupAmount} ml，能让记录更稳定。`
+    : (recentCompletedDays >= 5
+      ? `保持最近 7 天中 ${dominantPeriod} 时段的补水习惯，连续性会更好。`
+      : '先把每天至少一杯水的习惯固定下来，再逐步拉高总量。');
+
+  return {
+    totalLitres: (totalAmount / 1000).toFixed(1),
+    averageDaily: `${(averageDaily / 1000).toFixed(1)}L`,
+    averageCup: `${averageCup} ml`,
+    recentCompletion: `${recentCompletedDays}/7`,
+    recentTotal: `${(recentTotalAmount / 1000).toFixed(1)}L`,
+    dominantPeriod,
+    summary,
+    suggestion
+  };
+}
+
+function buildExportPayload(state) {
+  const exportedAt = nowIsoString();
+
+  return {
+    filename: `drink1-export-${formatExportTimestamp(exportedAt)}.json`,
+    exportedAt,
+    payload: {
+      schemaVersion: 1,
+      exportedAt,
+      profile: clone(state.profile),
+      settings: clone(state.settings),
+      hydration: clone(state.hydration),
+      achievements: clone(state.achievements),
+      meta: clone(state.meta)
+    }
+  };
+}
+
 function decorateState(state) {
   const records = (state.hydration.records || [])
     .map(normalizeWaterRecord)
@@ -456,6 +544,7 @@ function getForestViewModel() {
 function getProfileViewModel() {
   const state = ensureState();
   const profile = resolveProfile(state.profile);
+  const analysis = buildProfileAnalysis(state);
   const statusBar = {
     tone: profile.profileSource === 'manual' ? 'profile-manual' : 'profile',
     title: COPY.profile.statusTitle,
@@ -481,9 +570,14 @@ function getProfileViewModel() {
         name: definition.name,
         icon: definition.icon,
         description: definition.description,
+        category: definition.category,
+        target: definition.target,
         unlocked: progress.unlocked,
+        progressCurrent: progress.current,
+        progressTarget: progress.target,
         progressText: `${Math.min(progress.current, progress.target)}/${progress.target}`,
-        completionRate: progress.completionRate
+        completionRate: progress.completionRate,
+        progressPercent: Math.round(progress.completionRate * 100)
       };
     }),
     profile: clone(profile),
@@ -493,10 +587,15 @@ function getProfileViewModel() {
       totalLitres: (state.hydration.totals.totalAmount / 1000).toFixed(1),
       unlockedMedalCount: state.achievements.unlockedCount
     },
+    analysis,
     settings: clone(state.settings),
     session: clone(state.session),
     statusBar
   };
+}
+
+function exportHydrationData() {
+  return buildExportPayload(ensureState());
 }
 
 function addWaterRecord(amount, extra) {
@@ -905,6 +1004,7 @@ module.exports = {
   getStateSnapshot,
   getLoginViewModel,
   initStore,
+  exportHydrationData,
   logout,
   markPrivacyAccepted,
   setLoginProfile,

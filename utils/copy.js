@@ -14,7 +14,7 @@ const COPY = {
     actionLabel: '同步补水资料',
     menuItems: [
       { key: 'settings', title: '补水设置', subtitle: '每日目标、水杯容量与提醒节奏' },
-      { key: 'medals', title: '补水勋章', subtitle: '查看解锁进度', badge: true },
+      { key: 'medals', title: '补水勋章', subtitle: '查看系统勋章与解锁详情', badge: true },
       { key: 'privacy', title: '补水隐私条款', subtitle: '了解补水数据如何保存' },
       { key: 'about', title: '关于补水', subtitle: '补水版本信息与反馈入口' }
     ],
@@ -49,8 +49,12 @@ const COPY = {
     heroKicker: '补水设置',
     heroTitle: '把目标和提醒调成更适合你的补水节奏',
     dailyTargetTitle: '每日补水目标',
+    cupTitle: '默认单次饮水量',
+    cupNote: '这个值会同步到首页快速记录',
     reminderTitle: '补水提醒时间',
-    quickTitle: '快捷补水容量',
+    quickTitle: '快捷容量管理',
+    sharedHint: '这里调整的单次容量会同步到首页快速记录。',
+    exportHint: '同步补水资料会导出标准 JSON 到本机存储。',
     saveLabel: '保存补水设置',
     savedToast: '补水设置已保存',
     reminderItems: [

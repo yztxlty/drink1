@@ -254,6 +254,42 @@ function checkAuxiliaryCopy() {
   }
 }
 
+function checkProfileDashboardAndMedalAssets() {
+  const profileWxml = fs.readFileSync(path.join(root, 'pages/profile/profile.wxml'), 'utf8');
+  const medalsWxml = fs.readFileSync(path.join(root, 'pages/medals/medals.wxml'), 'utf8');
+  const settingsWxml = fs.readFileSync(path.join(root, 'pages/settings/settings.wxml'), 'utf8');
+  const { MEDAL_DEFINITIONS } = require(path.join(root, 'utils/medals'));
+  const store = require(path.join(root, 'utils/store'));
+
+  if (!profileWxml.includes('class="analysis-card glass-card"')) {
+    addFailure('Profile page should render the hydration analysis card');
+  }
+  if (!profileWxml.includes('class="export-card glass-card"')) {
+    addFailure('Profile page should render the export card');
+  }
+  if (!profileWxml.includes('bindtap="goToMedals"')) {
+    addFailure('Profile page should link the medal preview to the medal page');
+  }
+  if (!medalsWxml.includes('class="medal-focus glass-card"')) {
+    addFailure('Medal page should render the selected medal focus card');
+  }
+  if (!medalsWxml.includes('class="medal-gallery"')) {
+    addFailure('Medal page should render the medal gallery');
+  }
+  if (!settingsWxml.includes('bindchange="onCupChange"')) {
+    addFailure('Settings page should expose the default cup slider');
+  }
+  if (!settingsWxml.includes('{{copy.sharedHint}}')) {
+    addFailure('Settings page should explain the shared cup behavior');
+  }
+  if (!store.exportHydrationData || typeof store.exportHydrationData !== 'function') {
+    addFailure('Store should expose exportHydrationData()');
+  }
+  if (!MEDAL_DEFINITIONS.every((item) => typeof item.icon === 'string' && item.icon.startsWith('/assets/medals/'))) {
+    addFailure('All medal definitions should point at the medal asset directory');
+  }
+}
+
 function main() {
   checkAppRoutes();
   checkLocalAssetRefs();
@@ -268,6 +304,7 @@ function main() {
   checkPageStatusBars();
   checkCopyVocabulary();
   checkAuxiliaryCopy();
+  checkProfileDashboardAndMedalAssets();
 
   if (failures.length) {
     console.error('Smoke check failed:');

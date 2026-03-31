@@ -16,6 +16,16 @@ Page({
       unlockedMedals: 0,
       totalLiters: '0.0'
     },
+    analysis: {
+      totalLitres: '0.0',
+      averageDaily: '0.0L',
+      averageCup: '0 ml',
+      recentCompletion: '0/7',
+      recentTotal: '0.0L',
+      dominantPeriod: '全天',
+      summary: '补水分析会在这里显示。',
+      suggestion: '开始记录后，这里会给出更有针对性的建议。'
+    },
     badges: [],
     profile: {
       nickName: '补水计划用户',
@@ -24,6 +34,7 @@ Page({
       motto: '用每一次补水滋养今天'
     },
     profileInitial: '补',
+    exportResult: null,
     statusBar: {
       tone: 'profile',
       title: COPY.profile.statusTitle,
@@ -54,6 +65,12 @@ Page({
     })
   },
 
+  goToMedals() {
+    wx.navigateTo({
+      url: '/pages/medals/medals'
+    })
+  },
+
   refreshSummary() {
     const viewModel = this.store ? this.store.getProfileViewModel() : {
       badges: [],
@@ -63,6 +80,16 @@ Page({
         streakDays: 0,
         unlockedMedalCount: 0,
         totalLitres: '0.0'
+      },
+      analysis: {
+        totalLitres: '0.0',
+        averageDaily: '0.0L',
+        averageCup: '0 ml',
+        recentCompletion: '0/7',
+        recentTotal: '0.0L',
+        dominantPeriod: '全天',
+        summary: '补水分析会在这里显示。',
+        suggestion: '开始记录后，这里会给出更有针对性的建议。'
       },
       statusBar: {
         tone: 'profile',
@@ -74,10 +101,12 @@ Page({
       }
     }
     const profile = viewModel.profile || {}
+    const profileName = profile.displayNickName || profile.nickName || '补水计划用户'
     this.setData({
       badges: viewModel.badges,
       profile,
-      profileInitial: profile.nickName ? profile.nickName.slice(0, 1) : '补',
+      profileInitial: profileName ? profileName.slice(0, 1) : '补',
+      analysis: viewModel.analysis || this.data.analysis,
       settings: viewModel.settings,
       statusBar: viewModel.statusBar,
       summary: {
@@ -99,28 +128,69 @@ Page({
   },
 
   syncData() {
-    if (this.store) {
-      this.store.syncSessionHeartbeat()
+    if (!this.store) {
+      wx.showToast({
+        title: '当前无法导出',
+        icon: 'none'
+      })
+      return
     }
-    this.refreshSummary()
-    wx.showToast({
-      title: COPY.profile.syncToast,
-      icon: 'success'
-    })
+
+    this.store.syncSessionHeartbeat()
+
+    const exportData = this.store.exportHydrationData()
+    const filePath = `${wx.env.USER_DATA_PATH}/${exportData.filename}`
+
+    try {
+      const fs = wx.getFileSystemManager()
+      fs.writeFileSync(filePath, JSON.stringify(exportData.payload, null, 2), 'utf8')
+      this.setData({
+        exportResult: {
+          ...exportData,
+          path: filePath
+        }
+      })
+      this.refreshSummary()
+      wx.showToast({
+        title: COPY.profile.syncToast,
+        icon: 'success'
+      })
+      wx.showModal({
+        title: '导出完成',
+        content: `已保存为标准 JSON。\n\n文件：${exportData.filename}\n路径：${filePath}`,
+        showCancel: false
+      })
+    } catch (error) {
+      wx.showToast({
+        title: '导出失败',
+        icon: 'none'
+      })
+    }
   },
 
   logout() {
-    // 退出时只清理登录态，避免误伤本地补水记录和勋章进度。
-    if (this.store) {
-      this.store.clearUserStore()
-    }
-    if (app.globalData) {
-      app.globalData.userInfo = this.store ? this.store.getProfileViewModel().profile : null
-      app.globalData.appState = this.store ? this.store.getStore() : null
-    }
-    wx.removeStorageSync('drink_auth_state')
-    wx.reLaunch({
-      url: '/pages/login/login'
+    wx.showModal({
+      title: '退出登录',
+      content: '仅退出当前账号，不会删除本地补水记录和勋章成果。',
+      confirmText: '退出',
+      cancelText: '取消',
+      success: (res) => {
+        if (!res.confirm) {
+          return
+        }
+
+        if (this.store) {
+          this.store.clearUserStore()
+        }
+        if (app.globalData) {
+          app.globalData.userInfo = this.store ? this.store.getProfileViewModel().profile : null
+          app.globalData.appState = this.store ? this.store.getStore() : null
+        }
+        wx.removeStorageSync('drink_auth_state')
+        wx.reLaunch({
+          url: '/pages/login/login'
+        })
+      }
     })
   }
 })
