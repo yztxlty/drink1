@@ -2,7 +2,7 @@ const MEDAL_DEFINITIONS = [
   {
     id: 'first_drop',
     name: '第一滴',
-    icon: '💧',
+    icon: '/assets/medals/first_drop.png',
     description: '完成第一次补水记录',
     category: 'record',
     target: 1,
@@ -13,7 +13,7 @@ const MEDAL_DEFINITIONS = [
   {
     id: 'goal_once',
     name: '今日达标',
-    icon: '🎯',
+    icon: '/assets/medals/goal_once.png',
     description: '任意一天完成补水目标',
     category: 'goal',
     target: 1,
@@ -24,7 +24,7 @@ const MEDAL_DEFINITIONS = [
   {
     id: 'streak_3',
     name: '连续起航',
-    icon: '🔥',
+    icon: '/assets/medals/streak_3.png',
     description: '连续达标 3 天',
     category: 'streak',
     target: 3,
@@ -35,7 +35,7 @@ const MEDAL_DEFINITIONS = [
   {
     id: 'streak_7',
     name: '稳定补水者',
-    icon: '🌊',
+    icon: '/assets/medals/streak_7.png',
     description: '连续达标 7 天',
     category: 'streak',
     target: 7,
@@ -46,7 +46,7 @@ const MEDAL_DEFINITIONS = [
   {
     id: 'early_bird',
     name: '晨曦之饮',
-    icon: '🌅',
+    icon: '/assets/medals/early_bird.png',
     description: '早晨 9 点前完成 5 次记录',
     category: 'habit',
     target: 5,
@@ -57,7 +57,7 @@ const MEDAL_DEFINITIONS = [
   {
     id: 'night_guard',
     name: '夜间守护',
-    icon: '🌙',
+    icon: '/assets/medals/night_guard.png',
     description: '晚间 21 点后完成 5 次记录',
     category: 'habit',
     target: 5,
@@ -68,7 +68,7 @@ const MEDAL_DEFINITIONS = [
   {
     id: 'cup_20',
     name: '杯数收藏家',
-    icon: '🥛',
+    icon: '/assets/medals/cup_20.png',
     description: '累计记录 20 杯水',
     category: 'record',
     target: 20,
@@ -79,7 +79,7 @@ const MEDAL_DEFINITIONS = [
   {
     id: 'litre_50',
     name: '森林灌溉师',
-    icon: '🌳',
+    icon: '/assets/medals/litre_50.png',
     description: '累计补水达到 50L',
     category: 'growth',
     target: 50000,
