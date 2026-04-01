@@ -42,7 +42,7 @@ The screenshots below follow the natural user journey, from first entry to daily
 
 入口授权页，承接首次进入时的身份确认与产品主视觉。
 
-<img src="docs/readme/profile.jpg" alt="Profile screen / 个人中心" width="360" />
+<img src="docs/readme/login.jpg" alt="Login screen / 登录页" width="360" />
 
 ### 2. Home
 
@@ -60,7 +60,7 @@ The screenshots below follow the natural user journey, from first entry to daily
 
 个人中心汇总补水统计、图表分析、勋章成就和资料入口，是用户回看成长轨迹的核心页面。
 
-<img src="docs/readme/contact-dialog.jpg" alt="Contact dialog / 授权登录" width="360" />
+<img src="docs/readme/profile.jpg" alt="Profile screen / 个人中心" width="360" />
 
 ### 5. Settings
 
@@ -78,7 +78,7 @@ The screenshots below follow the natural user journey, from first entry to daily
 
 联系弹窗用于作者联系和社群加入，承接分享、反馈和用户连接场景。
 
-<img src="docs/readme/login.jpg" alt="Login screen / 联系作者" width="360" />
+<img src="docs/readme/contact-dialog.jpg" alt="Contact dialog / 联系弹窗" width="360" />
 
 ## Highlights
 
