@@ -27,6 +27,7 @@ Drink1 is designed for users who want hydration tracking to feel lightweight, co
 - [Highlights](#highlights)
 - [Architecture](#architecture)
 - [Getting Started](#getting-started)
+- [Versioning & Release](#versioning--release)
 - [Data & Privacy](#data--privacy)
 - [Repository Layout](#repository-layout)
 - [Contributing Notes](#contributing-notes)
@@ -116,6 +117,18 @@ The repository is organized around a clean WeChat Mini Program structure:
 The project is intentionally lightweight and does not rely on an extra frontend build pipeline.
 
 项目本身保持轻量，不依赖额外前端构建链，适合直接在微信开发者工具中打开、调试和迭代。
+
+## Versioning & Release
+
+This repository follows a simple GitHub-friendly release model:
+
+本仓库采用轻量但标准的发版方式：
+
+- `main` is the stable release branch.
+- `dev` is the integration branch for completed work.
+- `feature/*` branches are used for isolated development.
+- Semantic version tags such as `v0.1.0` trigger GitHub Releases automatically.
+- See the full policy in [docs/branching-release.md](docs/branching-release.md).
 
 ## Data & Privacy
 
