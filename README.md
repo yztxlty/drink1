@@ -22,8 +22,18 @@ Drink1 is designed for users who want hydration tracking to feel lightweight, co
 
 ## Quick Navigation
 
+<details open>
+<summary><strong>Table of Contents</strong></summary>
+
 - [Overview](#overview)
 - [Product Flow](#product-flow)
+  - [Login](#1-login)
+  - [Home](#2-home)
+  - [Forest](#3-forest)
+  - [Profile](#4-profile)
+  - [Settings](#5-settings)
+  - [Settings Sheet](#6-settings-sheet)
+  - [Contact Dialog](#7-contact-dialog)
 - [Highlights](#highlights)
 - [Architecture](#architecture)
 - [Getting Started](#getting-started)
@@ -33,6 +43,8 @@ Drink1 is designed for users who want hydration tracking to feel lightweight, co
 - [Contributing Notes](#contributing-notes)
 - [Open Source Policy](#open-source-policy)
 - [GitHub Home Setup](#github-home-setup)
+
+</details>
 
 ## Product Flow
 
@@ -172,5 +184,5 @@ This repository includes a few GitHub-native files to make the project page feel
 
 - `.github/FUNDING.yml` for the sponsor entry
 - `.github/PULL_REQUEST_TEMPLATE.md` for focused pull requests
-- `.github/ISSUE_TEMPLATE/` for structured bug reports and feature requests
+- `.github/ISSUE_TEMPLATE/*.yml` for structured GitHub Forms issue reports
 - `.github/workflows/release.yml` for tag-driven releases

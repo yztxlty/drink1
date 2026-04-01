@@ -1,0 +1,55 @@
+name: Feature request
+description: Suggest an improvement or new capability for Drink1.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the idea. Please describe the user problem and the value you want this feature to create.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What user problem or workflow gap are you trying to solve?
+      placeholder: Users need a faster way to log custom cup sizes from the home screen.
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the idea as clearly as possible.
+      placeholder: Add a compact quick-add menu with the most recent cup sizes and a custom input option.
+    validations:
+      required: true
+  - type: textarea
+    id: value
+    attributes:
+      label: Why It Matters
+      description: Explain the expected impact on the hydration workflow, usability, or maintainability.
+      placeholder: This would reduce friction during daily logging and make the app feel faster to use.
+    validations:
+      required: true
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope
+      description: Which part of the product does this request affect most?
+      options:
+        - Core hydration flow
+        - Home page
+        - Settings
+        - Profile / analytics
+        - Share / contact
+        - Documentation
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Add screenshots, references, or trade-offs worth considering.
+      placeholder: Include mockups, related issues, or any constraints we should keep in mind.
+
