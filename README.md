@@ -155,3 +155,4 @@ This repository follows a simple GitHub-friendly release model:
 - Keep reusable interaction logic in `components/` when multiple pages need it.
 - Treat `utils/store.js` as the source of truth for hydration state and derived summaries.
 - Store future README assets under `docs/readme/` so the documentation stays stable and portable.
+- See [CONTRIBUTING.md](CONTRIBUTING.md) for the branching model, PR expectations, and release checklist.
