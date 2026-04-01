@@ -32,6 +32,7 @@ Drink1 is designed for users who want hydration tracking to feel lightweight, co
 - [Repository Layout](#repository-layout)
 - [Contributing Notes](#contributing-notes)
 - [Open Source Policy](#open-source-policy)
+- [GitHub Home Setup](#github-home-setup)
 
 ## Product Flow
 
@@ -164,3 +165,12 @@ This repository follows a simple GitHub-friendly release model:
 - [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) describes the standards for respectful participation.
 - [CHANGELOG.md](CHANGELOG.md) tracks notable changes and semantic releases.
 - [SECURITY.md](SECURITY.md) explains how to report security issues privately.
+
+## GitHub Home Setup
+
+This repository includes a few GitHub-native files to make the project page feel complete and ready for collaboration:
+
+- `.github/FUNDING.yml` for the sponsor entry
+- `.github/PULL_REQUEST_TEMPLATE.md` for focused pull requests
+- `.github/ISSUE_TEMPLATE/` for structured bug reports and feature requests
+- `.github/workflows/release.yml` for tag-driven releases

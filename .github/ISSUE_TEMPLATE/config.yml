@@ -1,0 +1,6 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Drink1 Documentation
+    url: https://github.com/yztxlty/drink1/blob/main/README.md
+    about: Start here for project overview, release notes, and contribution guidance.
+
