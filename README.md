@@ -31,6 +31,7 @@ Drink1 is designed for users who want hydration tracking to feel lightweight, co
 - [Data & Privacy](#data--privacy)
 - [Repository Layout](#repository-layout)
 - [Contributing Notes](#contributing-notes)
+- [Open Source Policy](#open-source-policy)
 
 ## Product Flow
 
@@ -156,3 +157,10 @@ This repository follows a simple GitHub-friendly release model:
 - Treat `utils/store.js` as the source of truth for hydration state and derived summaries.
 - Store future README assets under `docs/readme/` so the documentation stays stable and portable.
 - See [CONTRIBUTING.md](CONTRIBUTING.md) for the branching model, PR expectations, and release checklist.
+
+## Open Source Policy
+
+- [CONTRIBUTING.md](CONTRIBUTING.md) explains how to branch, merge, and release.
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) describes the standards for respectful participation.
+- [CHANGELOG.md](CHANGELOG.md) tracks notable changes and semantic releases.
+- [SECURITY.md](SECURITY.md) explains how to report security issues privately.
