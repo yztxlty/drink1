@@ -81,5 +81,5 @@ ci: add release workflow
 - Keep reusable UI behavior in `components/`.
 - Keep hydration state and derived summaries in `utils/store.js`.
 - Store README images under `docs/readme/`.
+- See `docs/code-style.md` for the repository code style guide and conventions.
 - Update `docs/branching-release.md` whenever the branch or release policy changes.
-

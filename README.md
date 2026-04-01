@@ -9,6 +9,12 @@
 </p>
 
 <p align="center">
+  <img src="https://img.shields.io/badge/Status-Active%20Development-brightgreen?style=flat-square" alt="Active development" />
+  <img src="https://img.shields.io/badge/License-MIT-2ea44f?style=flat-square" alt="MIT License" />
+  <img src="https://img.shields.io/badge/Release-v0.1.0-blue?style=flat-square" alt="Release v0.1.0" />
+</p>
+
+<p align="center">
   A polished, local-first hydration tracker built for the WeChat Mini Program ecosystem.
   <br />
   一款面向微信小程序生态的本地优先补水记录应用，围绕「记录、提醒、成长、分享」构建完整的习惯闭环。
@@ -43,6 +49,8 @@ Drink1 is designed for users who want hydration tracking to feel lightweight, co
 - [Contributing Notes](#contributing-notes)
 - [Open Source Policy](#open-source-policy)
 - [GitHub Home Setup](#github-home-setup)
+- [License](#license)
+- [Credits](#credits)
 
 </details>
 
@@ -170,6 +178,7 @@ This repository follows a simple GitHub-friendly release model:
 - Treat `utils/store.js` as the source of truth for hydration state and derived summaries.
 - Store future README assets under `docs/readme/` so the documentation stays stable and portable.
 - See [CONTRIBUTING.md](CONTRIBUTING.md) for the branching model, PR expectations, and release checklist.
+- See [docs/code-style.md](docs/code-style.md) for the repository code style guide and file-level conventions.
 
 ## Open Source Policy
 
@@ -186,3 +195,14 @@ This repository includes a few GitHub-native files to make the project page feel
 - `.github/PULL_REQUEST_TEMPLATE.md` for focused pull requests
 - `.github/ISSUE_TEMPLATE/*.yml` for structured GitHub Forms issue reports
 - `.github/workflows/release.yml` for tag-driven releases
+
+## License
+
+Drink1 is released under the [MIT License](LICENSE).
+
+## Credits
+
+- Maintained by `yztxlty`
+- Built for the WeChat Mini Program ecosystem
+- Documentation and repository hygiene follow common GitHub open-source conventions
+- Thanks to the open-source tooling ecosystem behind Shields.io, GitHub Actions, and Keep a Changelog
