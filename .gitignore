@@ -1,1 +1,11 @@
 .worktrees/
+
+# macOS / Windows junk files
+.DS_Store
+._*
+.AppleDouble
+.LSOverride
+.Spotlight-V100/
+.Trashes/
+Thumbs.db
+Desktop.ini
