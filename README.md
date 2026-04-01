@@ -1,95 +1,141 @@
-# 喝水了吗
+# 喝水了吗 / Drink1
 
-一款微信小程序补水记录工具，围绕“记录 - 提醒 - 成长 - 分享”展开，帮助用户把每日喝水、目标达成和连续打卡变成可见的习惯进度。
+> A polished, local-first hydration tracker for the WeChat Mini Program ecosystem.
+>
+> 一款本地优先的微信小程序补水记录工具，围绕「记录、提醒、成长、分享」构建完整的习惯闭环。
 
-项目采用本地优先的数据保存方式，补水记录、目标设置、快捷容量、勋章进度和个人资料主要保存在微信本地存储中，适合轻量使用和持续迭代。
+## Project Vision / 产品定位
 
-## 产品定位
+**喝水了吗** is designed for users who want hydration tracking to feel lightweight, continuous, and rewarding.
 
-- 记录每一次补水，快速形成每日摄入统计
-- 通过连续打卡、目标进度和勋章系统建立正反馈
-- 用首页、森林页、个人中心和设置页承接不同使用场景
-- 强调本地优先、隐私友好、可持续维护
+**喝水了吗** 面向的是希望把补水习惯真正坚持下去的人：它把每一次饮水记录、每日目标、提醒节奏、连续打卡和成长勋章整合在一起，让“喝水”不再只是一个动作，而是一条可见、可回顾、可分享的习惯路径。
 
-## 主要功能
+## Why It Stands Out / 项目亮点
 
-- 首页补水记录
-  - 今日目标进度、已喝总量、剩余量和连续天数展示
-  - 快捷容量一键记录
-  - 自定义容量管理
-  - 今日记录列表和补水状态提示
-- 补水森林
-  - 作为成长与分享的展示入口
-  - 配合补水状态和打卡氛围增强使用感
-- 个人中心
-  - 补水统计概览
-  - 补水分析图表
-  - 勋章展示
-  - 资料编辑和社群入口
-- 设置与数据管理
-  - 每日目标、提醒节奏、快捷容量管理
-  - 当天数据删除和历史清空
-  - 补水资料导出
-- 隐私与关于
-  - 隐私说明
-  - 版本与反馈入口
+- **Local-first by design / 本地优先**  
+  Core hydration data, quick amounts, medals, settings, and profile state are stored locally in WeChat storage for a fast, private, and resilient experience.
+- **Habit loop engineered into the UX / 习惯闭环清晰**  
+  The app combines quick logging, reminder scheduling, streak tracking, and medal progression to keep feedback immediate and motivating.
+- **A focused mini-program architecture / 清晰的微信小程序架构**  
+  Pages handle user journeys, components encapsulate reusable interactions, and `utils/store.js` centralizes hydration state and derived analytics.
+- **Share-ready interactions / 分享与传播就绪**  
+  Built-in share logic, floating share entry, and contact paths make the product easy to distribute and easy to revisit.
+- **Privacy-conscious product language / 隐私友好的产品表达**  
+  The copy and data flow consistently emphasize local persistence and minimal exposure.
 
-## 技术栈
+## Screenshots / 项目截图
 
-- 微信小程序原生开发
-- JavaScript
-- WXML / WXSS
-- 微信本地存储作为核心数据层
+<table>
+  <tr>
+    <td align="center">
+      <img src="docs/readme/login.jpg" alt="Login screen / 登录页" width="230" />
+      <br /><b>登录页 / Login</b>
+      <br />授权入口与产品主视觉
+    </td>
+    <td align="center">
+      <img src="docs/readme/home.jpg" alt="Home screen / 首页" width="230" />
+      <br /><b>首页 / Home</b>
+      <br />补水记录、快捷容量与今日进度
+    </td>
+    <td align="center">
+      <img src="docs/readme/forest.jpg" alt="Forest screen / 森林页" width="230" />
+      <br /><b>森林页 / Forest</b>
+      <br />成长氛围、守护进度与分享入口
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="docs/readme/profile.jpg" alt="Profile screen / 个人中心" width="230" />
+      <br /><b>个人中心 / Profile</b>
+      <br />统计分析、勋章展示与资料管理
+    </td>
+    <td align="center">
+      <img src="docs/readme/settings.jpg" alt="Settings screen / 设置页" width="230" />
+      <br /><b>设置页 / Settings</b>
+      <br />目标、提醒和快捷容量统一配置
+    </td>
+    <td align="center">
+      <img src="docs/readme/settings-sheet.jpg" alt="Settings modal / 设置弹层" width="230" />
+      <br /><b>设置弹层 / Settings Sheet</b>
+      <br />保留沉浸式交互和安全确认
+    </td>
+  </tr>
+</table>
 
-## 目录结构
+## Runtime Experience / 运行效果
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="docs/readme/contact-dialog.jpg" alt="Contact dialog / 联系弹窗" width="230" />
+      <br /><b>联系弹窗 / Contact Dialog</b>
+      <br />扫码加入社群或联系作者
+    </td>
+    <td align="center">
+      <img src="docs/readme/settings-sheet.jpg" alt="Settings interaction / 设置交互" width="230" />
+      <br /><b>交互状态 / Interaction State</b>
+      <br />验证设置流和保存动作的完整性
+    </td>
+  </tr>
+</table>
+
+## Architecture / 代码架构
+
+The repository follows a clean mini-program split:
+
+本仓库采用清晰的微信小程序分层方式：
+
+- `pages/` — user-facing journeys such as home, forest, profile, settings, privacy, and about
+- `components/` — reusable interaction modules like the share FAB, navigation bar, dialogs, and quick-amount manager
+- `custom-tab-bar/` — custom bottom navigation for the main app shell
+- `utils/store.js` — hydration state, derived metrics, medal evaluation, and local persistence
+- `utils/copy.js` — centralized product copy and screen text
+- `utils/medals.js`, `utils/water.js`, `utils/home.js` — domain logic for medals, hydration math, and home view models
+- `scripts/` — regression checks and smoke tests used during development
+
+## Key Capabilities / 核心能力
+
+- Daily hydration target tracking / 每日补水目标跟踪
+- Quick amount presets and custom amount management / 快捷容量与自定义容量管理
+- Reminder scheduling / 补水提醒节奏
+- Streak and medal progression / 连续天数与勋章成长
+- Local data management and export support / 本地数据管理与导出支持
+- Privacy policy and about pages / 隐私条款与关于页
+- Floating share entry and contact flow / 浮动分享入口与联系流程
+
+## Quick Start / 快速开始
+
+1. Open the repository in WeChat DevTools.
+2. Compile the project with the mini-program runtime.
+3. If needed, fill in your own `appid` for real platform capabilities such as login, sharing, and device-specific behaviors.
+
+The project is intentionally lightweight:
+
+项目本身保持轻量，不依赖额外前端构建链，适合直接在微信开发者工具中打开、调试和迭代。
+
+## Data & Privacy / 数据与隐私
+
+- Hydration records, settings, medals, and profile state are stored locally by default.
+- The repository currently does not include a backend service.
+- If cloud sync or account services are added later, the privacy text and product copy should be updated together.
+
+## Directory Snapshot / 目录速览
 
 ```text
 .
 ├── app.js / app.json / app.wxss
 ├── components/
-│   ├── contact-dialog/
-│   ├── navigation-bar/
-│   ├── page-status-strip/
-│   ├── quick-amount-manager/
-│   └── share-fab/
 ├── custom-tab-bar/
+├── docs/readme/
 ├── pages/
-│   ├── home/
-│   ├── explore/
-│   ├── profile/
-│   ├── settings/
-│   ├── data-management/
-│   ├── medals/
-│   ├── privacy/
-│   └── about/
-├── utils/
-│   ├── copy.js
-│   ├── store.js
-│   ├── medals.js
-│   ├── water.js
-│   └── ...
-└── scripts/
+├── scripts/
+└── utils/
 ```
 
-## 本地运行
+## Notes for Contributors / 开发说明
 
-1. 使用微信开发者工具打开本项目根目录。
-2. 按需填写 `appid`，或者使用当前的本地开发配置。
-3. 直接编译运行即可。
-
-说明：
-
-- 项目主要依赖微信小程序运行时，不需要额外的前端构建步骤
-- 如果你要在真机上验证分享、登录、授权或本地缓存行为，建议直接使用微信开发者工具预览和调试
-
-## 数据与隐私
-
-- 补水记录、目标、快捷容量、勋章和个人设置以本地存储为主
-- 当前仓库不包含后端服务代码
-- 如后续接入云同步或账号体系，建议同步更新隐私条款和 README
-
-## 反馈与扩展
-
-- 想继续做功能扩展时，可以优先从 `utils/store.js`、`utils/copy.js` 和 `pages/` 下的页面入口入手
-- 如果需要调整视觉与交互，推荐先看 `components/` 和 `custom-tab-bar/`
+- Prefer updating shared copy in `utils/copy.js` before duplicating text in page files.
+- Keep reusable interaction logic inside `components/` when multiple pages need it.
+- Use `utils/store.js` as the source of truth for hydration-related state and derived summaries.
+- Store new README assets under `docs/readme/` so they can be referenced with stable relative paths.
 
