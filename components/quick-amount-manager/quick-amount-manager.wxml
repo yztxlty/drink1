@@ -1,0 +1,59 @@
+<view class="quick-amount-manager {{deleteMode ? 'delete-mode' : ''}}" bindtap="handleRootTap">
+  <view class="section-head">
+    <view>
+      <text class="section-title">{{title}}</text>
+      <text class="section-note">{{deleteMode ? deleteHint : manageHint}}</text>
+    </view>
+    <view class="quick-amount-head-actions">
+      <view class="quick-amount-count">{{quickAmounts.length}} {{countSuffix}}</view>
+      <view class="quick-amount-edit" catchtap="noop">
+        <view class="quick-amount-edit-action" bindtap="enterDeleteMode">✎</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="chip-grid quick-amount-grid">
+    <view class="amount-chip quick-amount-chip add-chip" catchtap="noop">
+      <view class="add-chip-action" bindtap="openQuickAmountDialog">
+        <text class="add-chip-plus">+</text>
+        <text class="add-chip-label">{{addLabel}}</text>
+      </view>
+    </view>
+    <view
+      class="amount-chip quick-amount-chip {{selectedAmount === item ? 'selected' : ''}} {{deleteMode ? 'delete-ready' : ''}}"
+      wx:for="{{quickAmounts}}"
+      wx:key="*this"
+      data-amount="{{item}}"
+      bindtap="handleAmountTap"
+      catchtap="noop"
+      >
+      <text class="quick-amount-value">{{item}}ml</text>
+      <view wx:if="{{deleteMode}}" class="quick-amount-delete">
+        <view class="quick-amount-delete-action" data-amount="{{item}}" catchtap="handleDeleteTap">×</view>
+      </view>
+    </view>
+  </view>
+
+  <text class="section-note quick-amount-hint">{{deleteMode ? deleteModeTip : sharedHint}}</text>
+
+  <view wx:if="{{dialogVisible}}" class="quick-amount-mask" bindtap="closeQuickAmountDialog">
+    <view class="quick-amount-dialog glass-card" catchtap="noop">
+      <view class="quick-amount-dialog-head">
+        <view>
+          <text class="section-title">{{dialogTitle}}</text>
+          <text class="section-note">{{dialogHint}}</text>
+        </view>
+        <text class="quick-amount-close" bindtap="closeQuickAmountDialog">×</text>
+      </view>
+
+      <view class="quick-amount-stepper">
+        <view class="step-btn" bindtap="decreaseQuickAmountDraft">-</view>
+        <view class="quick-amount-draft">{{draftAmount}}ml</view>
+        <view class="step-btn" bindtap="increaseQuickAmountDraft">+</view>
+      </view>
+
+      <text class="section-note quick-amount-dialog-tip">{{dialogTip}}</text>
+      <button class="primary-btn quick-amount-confirm" bindtap="confirmQuickAmount">{{confirmLabel}}</button>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,26 @@
+<view class="custom-tab-bar {{ready ? 'is-ready' : ''}}">
+  <view class="custom-tab-bar__surface">
+    <view class="custom-tab-bar__track">
+      <view
+        wx:for="{{items}}"
+        wx:for-item="item"
+        wx:for-index="index"
+        wx:key="pagePath"
+        class="tab-item {{selected === index ? 'tab-item--active' : ''}}"
+        data-index="{{index}}"
+        bindtap="onTabTap"
+      >
+        <view wx:if="{{selected === index}}" class="tab-item__active-bg"></view>
+        <view wx:if="{{selected === index}}" class="tab-item__water-ripple"></view>
+        <view class="tab-item__icon-wrap">
+          <image
+            class="tab-item__icon"
+            src="{{selected === index ? item.selectedIconPath : item.iconPath}}"
+            mode="aspectFit"
+          />
+        </view>
+        <text class="tab-item__text">{{item.text}}</text>
+      </view>
+    </view>
+  </view>
+</view>

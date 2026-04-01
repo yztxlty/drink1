@@ -54,7 +54,9 @@ function normalizeQuickAmounts(quickAmounts) {
     .map((item) => Number(item))
     .filter((item) => Number.isFinite(item) && item > 0);
 
-  return normalized.length ? Array.from(new Set(normalized)) : DEFAULT_QUICK_AMOUNTS.slice();
+  return normalized.length
+    ? Array.from(new Set(normalized)).sort((left, right) => left - right)
+    : DEFAULT_QUICK_AMOUNTS.slice();
 }
 
 function buildDefaultState() {
@@ -166,6 +168,11 @@ function normalizeSettings(settings) {
   const safeSettings = settings || {};
   const quickAmounts = normalizeQuickAmounts(safeSettings.quickAmounts);
   const selectedCupAmount = Number(safeSettings.selectedCupAmount);
+  const incomingDailyTarget = Number(
+    Number.isFinite(Number(safeSettings.dailyTarget))
+      ? safeSettings.dailyTarget
+      : safeSettings.dailyGoal
+  );
   const fallbackSelectedCup = quickAmounts.includes(selectedCupAmount)
     ? selectedCupAmount
     : quickAmounts[1] || quickAmounts[0];
@@ -173,7 +180,7 @@ function normalizeSettings(settings) {
   return {
     ...DEFAULT_SETTINGS,
     ...safeSettings,
-    dailyTarget: Number(safeSettings.dailyTarget) > 0 ? Number(safeSettings.dailyTarget) : DEFAULT_DAILY_TARGET,
+    dailyTarget: incomingDailyTarget > 0 ? incomingDailyTarget : DEFAULT_DAILY_TARGET,
     quickAmounts,
     selectedCupAmount: fallbackSelectedCup,
     reminderEnabled: safeSettings.reminderEnabled !== false,
@@ -296,6 +303,17 @@ function buildYearSeries(daily, dailyTarget) {
   return points;
 }
 
+function getDisplayStreakDays(state) {
+  const streak = state && state.hydration && state.hydration.streak ? state.hydration.streak : {};
+  const activeCurrent = Number(streak.activeCurrent);
+  if (Number.isFinite(activeCurrent) && activeCurrent > 0) {
+    return activeCurrent;
+  }
+
+  const current = Number(streak.current);
+  return Number.isFinite(current) && current > 0 ? current : 0;
+}
+
 function buildProfileAnalysis(state) {
   const totals = state.hydration.totals || {};
   const daily = state.hydration.daily || {};
@@ -303,7 +321,7 @@ function buildProfileAnalysis(state) {
   const totalAmount = Number(totals.totalAmount) || 0;
   const totalRecords = Number(totals.totalRecords) || 0;
   const activeDays = Number(totals.activeDays) || 0;
-  const streakDays = Number(state.hydration.streak && state.hydration.streak.current) || 0;
+  const streakDays = getDisplayStreakDays(state);
   const averageCup = totalRecords > 0 ? Math.round(totalAmount / totalRecords) : 0;
   const averageDaily = activeDays > 0 ? Math.round(totalAmount / activeDays) : 0;
   let recentCompletedDays = 0;
@@ -540,7 +558,7 @@ function getHomeViewModel() {
     state.settings.dailyTarget
   );
   const todayStatus = getHydrationStatus(today.total, state.settings.dailyTarget);
-  const heroStat = buildHeroStat(todayStatus, state.hydration.streak.current);
+  const heroStat = buildHeroStat(todayStatus, getDisplayStreakDays(state));
   const statusBar = {
     tone: todayStatus.level,
     title: COPY.home.statusTitle,
@@ -562,7 +580,7 @@ function getHomeViewModel() {
     todayRecordCount: today.recordCount,
     dailyTarget: state.settings.dailyTarget,
     remaining: today.remaining,
-    streakDays: state.hydration.streak.current,
+    streakDays: getDisplayStreakDays(state),
     completedDays: state.hydration.totals.completedDays,
     qualityLabel: getHydrationQuality(today.completionRate),
     todayStatus,
@@ -640,13 +658,14 @@ function getProfileViewModel() {
   const state = ensureState();
   const profile = resolveProfile(state.profile);
   const analysis = buildProfileAnalysis(state);
+  const streakDays = getDisplayStreakDays(state);
   const statusBar = {
     tone: profile.profileSource === 'manual' ? 'profile-manual' : 'profile',
     title: COPY.profile.statusTitle,
     subtitle: profile.profileSource === 'manual'
       ? '手动资料与进度正在同步'
       : (profile.profileSource === 'wechat' ? '微信资料与进度已同步' : '资料与进度保持同步'),
-    metricValue: `${state.hydration.streak.current}`,
+    metricValue: `${streakDays}`,
     metricLabel: '连续天数',
     actionLabel: ''
   };
@@ -677,7 +696,7 @@ function getProfileViewModel() {
     }),
     profile: clone(profile),
     stats: {
-      streakDays: state.hydration.streak.current,
+      streakDays,
       averageCompletion: `${Math.round(state.hydration.totals.averageCompletionRate * 100)}%`,
       totalLitres: (state.hydration.totals.totalAmount / 1000).toFixed(1),
       unlockedMedalCount: state.achievements.unlockedCount
@@ -922,6 +941,34 @@ function syncSessionHeartbeat() {
   });
 }
 
+function deleteTodayHydrationData() {
+  const todayKey = getTodayKey();
+  return updateState((state) => {
+    state.hydration.records = (state.hydration.records || []).filter((record) => {
+      const recordDateKey = record.dateKey || getDateKey(record.createdAt);
+      return recordDateKey !== todayKey;
+    });
+    state.session.lastOpenAt = nowIsoString();
+    return state;
+  });
+}
+
+function clearBusinessData() {
+  return updateState((state) => {
+    state.hydration.records = [];
+    state.achievements = {
+      progress: {},
+      unlockedIds: [],
+      unlockedCount: 0,
+      newlyUnlocked: [],
+      lastEvaluatedAt: '',
+      catalogVersion: 1
+    };
+    state.session.lastOpenAt = nowIsoString();
+    return state;
+  });
+}
+
 function buildUserStore(state) {
   const profile = resolveProfile(state.profile);
 
@@ -966,6 +1013,12 @@ function buildBusinessStore(state) {
 
 function initStore() {
   ensureState();
+  return getStore();
+}
+
+function resetToDefault() {
+  cachedState = buildDefaultState();
+  writeStorage(STORAGE_KEY, cachedState);
   return getStore();
 }
 
@@ -1091,6 +1144,8 @@ module.exports = {
   STATE_VERSION,
   addWaterRecord,
   clearUserStore,
+  clearBusinessData,
+  deleteTodayHydrationData,
   ensureState,
   getForestViewModel,
   getHomeViewModel,
@@ -1102,6 +1157,7 @@ module.exports = {
   exportHydrationData,
   logout,
   markPrivacyAccepted,
+  resetToDefault,
   setLoginProfile,
   setSelectedCupAmount,
   restoreWechatProfile,

@@ -1,0 +1,25 @@
+<view class="contact-dialog-root {{visible ? 'is-visible' : ''}} {{saving ? 'is-saving' : ''}}">
+  <view class="contact-dialog-mask" bindtap="handleMaskTap"></view>
+
+  <view class="contact-dialog-card glass-card" catchtap="noop">
+    <view class="contact-dialog-header">
+      <text class="contact-dialog-title">{{title}}</text>
+      <text class="contact-dialog-subtitle">{{subtitle}}</text>
+    </view>
+
+    <view class="contact-dialog-qr-wrap">
+      <image
+        class="contact-dialog-qr"
+        src="{{qrSrc}}"
+        mode="aspectFit"
+        show-menu-by-longpress="{{true}}"
+      />
+    </view>
+
+    <text class="contact-dialog-tip">扫码后可直接加微信，或点击按钮保存到手机相册</text>
+
+    <button class="contact-dialog-save-btn" bindtap="saveQRCode" disabled="{{saving}}">
+      {{saving ? '保存中...' : saveButtonText}}
+    </button>
+  </view>
+</view>

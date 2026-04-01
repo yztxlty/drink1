@@ -32,6 +32,60 @@ function normalizeWaterAmount(amount) {
   return Math.max(50, Math.round(safeAmount / 50) * 50);
 }
 
+function getPreviousDateKey(dateKey) {
+  const previousDate = new Date(toDate(dateKey).getTime() - 24 * 60 * 60 * 1000);
+  return getDateKey(previousDate);
+}
+
+function calculateCurrentStreak(orderedKeys, daily, predicate, anchorDateKey) {
+  const safeDaily = daily || {};
+  const safePredicate = typeof predicate === 'function' ? predicate : () => false;
+
+  if (!anchorDateKey || !safeDaily[anchorDateKey] || !safePredicate(safeDaily[anchorDateKey])) {
+    return 0;
+  }
+
+  let streak = 0;
+  let cursorDateKey = anchorDateKey;
+
+  while (safeDaily[cursorDateKey] && safePredicate(safeDaily[cursorDateKey])) {
+    streak += 1;
+    cursorDateKey = getPreviousDateKey(cursorDateKey);
+  }
+
+  return streak;
+}
+
+function calculateLongestStreak(orderedKeys, daily, predicate) {
+  const safeDaily = daily || {};
+  const safePredicate = typeof predicate === 'function' ? predicate : () => false;
+  let longestStreak = 0;
+  let runningStreak = 0;
+
+  orderedKeys.forEach((dateKey, index) => {
+    const previousKey = orderedKeys[index - 1];
+    const entry = safeDaily[dateKey];
+    const isQualified = entry && safePredicate(entry);
+
+    if (!isQualified) {
+      runningStreak = 0;
+      return;
+    }
+
+    if (!previousKey || diffDateKeys(dateKey, previousKey) === 1) {
+      runningStreak += 1;
+    } else {
+      runningStreak = 1;
+    }
+
+    if (runningStreak > longestStreak) {
+      longestStreak = runningStreak;
+    }
+  });
+
+  return longestStreak;
+}
+
 function buildDailySummaries(records, dailyTarget) {
   const daily = {};
   let totalAmount = 0;
@@ -74,33 +128,18 @@ function buildDailySummaries(records, dailyTarget) {
   });
 
   const orderedKeys = Object.keys(daily).sort((left, right) => diffDateKeys(left, right));
-  let longestStreak = 0;
-  let runningStreak = 0;
-
-  orderedKeys.forEach((dateKey, index) => {
-    const previousKey = orderedKeys[index - 1];
-    const isCompleted = daily[dateKey].completed;
-
-    if (!isCompleted) {
-      runningStreak = 0;
-    } else if (!previousKey || diffDateKeys(dateKey, previousKey) === 1) {
-      runningStreak += 1;
-    } else {
-      runningStreak = 1;
-    }
-
-    if (runningStreak > longestStreak) {
-      longestStreak = runningStreak;
-    }
-  });
-
-  let currentStreak = 0;
-  let cursorDateKey = getTodayKey();
-  while (daily[cursorDateKey] && daily[cursorDateKey].completed) {
-    currentStreak += 1;
-    const previousDate = new Date(toDate(cursorDateKey).getTime() - 24 * 60 * 60 * 1000);
-    cursorDateKey = getDateKey(previousDate);
-  }
+  const completedPredicate = (entry) => Boolean(entry && entry.completed);
+  const activePredicate = (entry) => Number(entry && entry.total) > 0;
+  const longestStreak = calculateLongestStreak(orderedKeys, daily, completedPredicate);
+  const currentStreak = calculateCurrentStreak(orderedKeys, daily, completedPredicate, getTodayKey());
+  const activeLongestStreak = calculateLongestStreak(orderedKeys, daily, activePredicate);
+  const activeCurrentStreak = calculateCurrentStreak(
+    orderedKeys,
+    daily,
+    activePredicate,
+    orderedKeys.length ? orderedKeys[orderedKeys.length - 1] : ''
+  );
+  const lastActiveDateKey = orderedKeys.length ? orderedKeys[orderedKeys.length - 1] : '';
 
   const completedDays = Object.values(daily).filter((entry) => entry.completed).length;
   const activeDays = Object.keys(daily).length;
@@ -122,7 +161,10 @@ function buildDailySummaries(records, dailyTarget) {
     streak: {
       current: currentStreak,
       longest: longestStreak,
-      lastQualifiedDateKey: currentStreak > 0 ? getTodayKey() : ''
+      lastQualifiedDateKey: currentStreak > 0 ? getTodayKey() : '',
+      activeCurrent: activeCurrentStreak,
+      activeLongest: activeLongestStreak,
+      lastActiveDateKey
     }
   };
 }

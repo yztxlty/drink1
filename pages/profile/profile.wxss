@@ -248,7 +248,7 @@
 
 .analysis-chart {
   position: relative;
-  height: 280rpx;
+  height: 320rpx;
   margin-top: 18rpx;
   border-radius: 24rpx;
   overflow: hidden;
@@ -289,25 +289,40 @@
   inset: 0;
   z-index: 5;
   pointer-events: none;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
 }
 
 .analysis-line-segment {
   position: absolute;
-  height: 4rpx;
-  transform-origin: left center;
+  border-radius: 999rpx;
   background: linear-gradient(90deg, rgba(0, 95, 155, 0.86), rgba(76, 198, 249, 0.92));
-  box-shadow: 0 0 10rpx rgba(0, 95, 155, 0.24);
+  box-shadow: 0 0 12rpx rgba(0, 95, 155, 0.3);
   animation: lineGlow 2.6s ease-in-out infinite;
+}
+
+.analysis-line-segment.direct {
+  height: 5rpx;
+  transform-origin: left center;
 }
 
 .analysis-line-point {
   position: absolute;
-  width: 14rpx;
-  height: 14rpx;
+  width: 16rpx;
+  height: 16rpx;
   border-radius: 50%;
   background: #ffffff;
-  border: 3rpx solid rgba(0, 95, 155, 0.9);
-  box-shadow: 0 0 18rpx rgba(0, 95, 155, 0.36);
+  border: 4rpx solid rgba(0, 95, 155, 0.9);
+  box-shadow: 0 0 22rpx rgba(0, 95, 155, 0.4);
+}
+
+.analysis-plot-area {
+  position: absolute;
+  left: 8rpx;
+  right: 8rpx;
+  top: 14rpx;
+  bottom: 44rpx;
 }
 
 .analysis-bars-layer {
@@ -317,7 +332,7 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  padding: 18rpx 8rpx 12rpx;
+  gap: 4rpx;
   box-sizing: border-box;
 }
 
@@ -329,30 +344,43 @@
   justify-content: flex-end;
   align-items: center;
   gap: 6rpx;
+  box-sizing: border-box;
 }
 
 .analysis-bar-amount {
   font-size: 18rpx;
+  min-height: 26rpx;
   color: rgba(16, 53, 83, 0.7);
 }
 
-.analysis-bar-shell {
+.analysis-bar-track {
   width: 62%;
-  height: 72%;
+  flex: 1;
   display: flex;
   align-items: flex-end;
 }
 
 .analysis-bar-crystal {
   width: 100%;
-  min-height: 12rpx;
   border-radius: 18rpx 18rpx 8rpx 8rpx;
   background: linear-gradient(180deg, rgba(169, 231, 255, 0.95) 0%, rgba(85, 173, 239, 0.92) 50%, rgba(0, 95, 155, 0.9) 100%);
-  box-shadow: inset -6rpx 0 8rpx rgba(255, 255, 255, 0.34), inset 6rpx 0 10rpx rgba(0, 53, 93, 0.16), 0 8rpx 14rpx rgba(0, 95, 155, 0.2);
+  box-shadow: inset -7rpx 0 10rpx rgba(255, 255, 255, 0.4), inset 7rpx 0 12rpx rgba(0, 53, 93, 0.2), 0 12rpx 20rpx rgba(0, 95, 155, 0.26);
   animation: crystalPulse 2.8s ease-in-out infinite;
 }
 
+.analysis-label-layer {
+  position: absolute;
+  left: 8rpx;
+  right: 8rpx;
+  bottom: 10rpx;
+  display: flex;
+  justify-content: space-between;
+  z-index: 6;
+}
+
 .analysis-bar-label {
+  flex: 1;
+  text-align: center;
   font-size: 18rpx;
   color: var(--on-surface-variant);
 }
@@ -410,9 +438,9 @@
 }
 
 .badge-card {
-  flex: 0 0 164rpx;
-  min-height: 196rpx;
-  padding: 24rpx 16rpx;
+  flex: 0 0 208rpx;
+  min-height: 252rpx;
+  padding: 26rpx 18rpx;
   border-radius: 36rpx;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(240, 247, 252, 0.88));
   backdrop-filter: blur(24rpx);
@@ -428,20 +456,19 @@
 
 .badge-art {
   position: relative;
-  width: 112rpx;
-  height: 112rpx;
+  width: 170rpx;
+  height: 170rpx;
   border-radius: 50%;
-  background: radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.98), rgba(231, 245, 255, 0.78) 60%, rgba(0, 95, 155, 0.1) 100%);
-  box-shadow: inset 0 1rpx 0 rgba(255, 255, 255, 0.9), 0 12rpx 24rpx rgba(16, 53, 83, 0.08);
-  overflow: hidden;
+  background: transparent;
+  overflow: visible;
 }
 
 .badge-halo {
   position: absolute;
-  inset: -16rpx;
+  inset: -28rpx;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(0, 95, 155, 0.15), transparent 68%);
-  filter: blur(8rpx);
+  background: radial-gradient(circle, rgba(57, 199, 255, 0.5), rgba(0, 95, 155, 0.1) 56%, transparent 74%);
+  filter: blur(13rpx);
 }
 
 .badge-icon-img {
@@ -449,15 +476,16 @@
   z-index: 1;
   width: 100%;
   height: 100%;
-  padding: 16rpx;
+  padding: 0rpx;
   box-sizing: border-box;
-  filter: drop-shadow(0 10rpx 16rpx rgba(13, 45, 74, 0.18));
+  filter: drop-shadow(0 14rpx 22rpx rgba(13, 45, 74, 0.24)) saturate(1.28) brightness(1.08);
 }
 
 .badge-card.locked {
-  opacity: 0.96;
+  opacity: 1;
   transform: scale(1);
-  border-color: rgba(94, 183, 237, 0.62);
+  border-color: rgba(35, 178, 243, 0.72);
+  box-shadow: 0 16rpx 38rpx rgba(16, 53, 83, 0.12);
 }
 
 .badge-name {
@@ -478,7 +506,7 @@
     filter: brightness(1) saturate(1);
   }
   50% {
-    filter: brightness(1.08) saturate(1.1);
+    filter: brightness(1.14) saturate(1.18);
   }
   100% {
     filter: brightness(1) saturate(1);
@@ -488,15 +516,15 @@
 @keyframes lineGlow {
   0% {
     opacity: 0.68;
-    box-shadow: 0 0 6rpx rgba(0, 95, 155, 0.16);
+    box-shadow: 0 0 8rpx rgba(0, 95, 155, 0.2);
   }
   50% {
     opacity: 1;
-    box-shadow: 0 0 14rpx rgba(0, 95, 155, 0.36);
+    box-shadow: 0 0 18rpx rgba(0, 95, 155, 0.46);
   }
   100% {
     opacity: 0.68;
-    box-shadow: 0 0 6rpx rgba(0, 95, 155, 0.16);
+    box-shadow: 0 0 8rpx rgba(0, 95, 155, 0.2);
   }
 }
 
@@ -538,10 +566,45 @@
 }
 
 .export-result-path {
+  flex: 1;
   font-size: 22rpx;
   color: var(--on-surface-variant);
   word-break: break-all;
   line-height: 1.6;
+}
+
+.export-path-row {
+  display: block;
+}
+
+.export-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+  margin-top: 6rpx;
+}
+
+.export-copy-btn {
+  flex: none;
+  margin-top: 2rpx;
+  min-width: 92rpx;
+  height: 44rpx;
+  padding: 0 14rpx;
+  border-radius: 999rpx;
+  border: 1rpx solid rgba(0, 95, 155, 0.32);
+  color: var(--primary);
+  font-size: 20rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.export-path-tip {
+  font-size: 20rpx;
+  color: var(--on-surface-variant);
+  line-height: 1.5;
 }
 
 .sync-btn {

@@ -104,3 +104,5 @@
     <view class="bottom-space"></view>
   </view>
 </scroll-view>
+
+<share-fab id="shareFab" page-name="explore" />

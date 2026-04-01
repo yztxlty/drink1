@@ -29,7 +29,26 @@ Page({
   },
 
   onShow() {
+    const tabBar = typeof this.getTabBar === 'function' ? this.getTabBar() : null;
+    if (tabBar && typeof tabBar.setData === 'function') {
+      tabBar.setData({ selected: 1 });
+    }
     this.refreshPageData();
+  },
+
+  onShareAppMessage() {
+    const shareFab = typeof this.selectComponent === 'function'
+      ? this.selectComponent('#shareFab')
+      : null;
+
+    if (shareFab && typeof shareFab.getShareContent === 'function') {
+      return shareFab.getShareContent();
+    }
+
+    return {
+      title: COPY.forest.statusTitle,
+      path: '/pages/explore/explore'
+    };
   },
 
   refreshPageData() {

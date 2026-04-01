@@ -79,35 +79,21 @@
 
         <view class="analysis-chart">
           <view class="analysis-chart-grid"></view>
-          <view class="analysis-target-line" style="bottom: {{analysisChart.targetPercent}}%;">
-            <text class="analysis-target-label">{{analysisChart.targetMl}}ml</text>
-          </view>
+          <view class="analysis-plot-area">
+            <view class="analysis-line-layer" style="{{analysisChart.lineSvgStyle}}"></view>
 
-          <view class="analysis-line-layer">
-            <view
-              class="analysis-line-segment"
-              wx:for="{{analysisChart.lineSegments}}"
-              wx:for-index="index"
-              wx:key="index"
-              style="{{item.style}}"
-            ></view>
-            <view
-              class="analysis-line-point"
-              wx:for="{{analysisChart.linePoints}}"
-              wx:for-index="index"
-              wx:key="index"
-              style="{{item.style}}"
-            ></view>
-          </view>
-
-          <view class="analysis-bars-layer">
-            <view class="analysis-bar-item" wx:for="{{analysisChart.points}}" wx:key="key">
-              <text class="analysis-bar-amount">{{item.amountLabel}}</text>
-              <view class="analysis-bar-shell">
-                <view class="analysis-bar-crystal" style="height: {{item.barPercent}}%;"></view>
+            <view class="analysis-bars-layer">
+              <view class="analysis-bar-item" wx:for="{{analysisChart.points}}" wx:key="key">
+                <text class="analysis-bar-amount">{{item.amountLabel}}</text>
+                <view class="analysis-bar-track">
+                  <view class="analysis-bar-crystal" style="height: {{item.barPercent}}%;"></view>
+                </view>
               </view>
-              <text class="analysis-bar-label">{{item.label}}</text>
             </view>
+          </view>
+
+          <view class="analysis-label-layer">
+            <text class="analysis-bar-label" wx:for="{{analysisChart.points}}" wx:key="key">{{item.label}}</text>
           </view>
         </view>
       </view>
@@ -168,45 +154,51 @@
     <view class="export-card glass-card">
       <view class="record-head">
         <view>
-          <text class="section-title">同步补水资料</text>
+          <text class="section-title">数据本地保存</text>
           <text class="section-subtitle">导出标准 JSON 到本机存储</text>
         </view>
       </view>
 
       <view class="export-hint-row">
         <view class="export-hint-chip">标准 JSON</view>
-        <view class="export-hint-chip">本机路径</view>
-        <view class="export-hint-chip">用户自管</view>
+        <view class="export-hint-chip">分享文件</view>
+        <view class="export-hint-chip">外部可见</view>
       </view>
 
       <view wx:if="{{exportResult}}" class="export-result">
         <text class="export-result-title">最近导出</text>
-        <text class="export-result-file">{{exportResult.filename}}</text>
-        <text class="export-result-path">{{exportResult.path}}</text>
+        <text class="export-result-file">{{exportResult.filename}} · {{exportResult.sizeLabel}}</text>
+        <view class="export-path-row">
+          <text class="export-result-path" bindtap="handleExportPathTap">{{exportResult.path}}</text>
+        </view>
+        <view class="export-action-row">
+          <view class="export-copy-btn" bindtap="copyExportPath">复制路径</view>
+          <view class="export-copy-btn" bindtap="shareExportFile">分享文件</view>
+          <view class="export-copy-btn" bindtap="saveExportToExternal">另存到手机</view>
+        </view>
+        <text class="export-path-tip">双击路径复制，或使用分享/另存让系统文件管理器可见</text>
       </view>
 
       <button class="primary-btn sync-btn" bindtap="syncData">{{copy.actionLabel}}</button>
     </view>
 
     <view class="menu-group glass-card">
-      <view
-        class="menu-line {{index === menuItems.length - 1 ? 'last' : ''}}"
-        wx:for="{{menuItems}}"
-        wx:for-item="item"
-        wx:for-index="index"
-        wx:key="key"
-        bindtap="navigateToMenu"
-        data-key="{{item.key}}"
-      >
-        <view class="menu-texts">
-          <text class="lab">{{item.title}}</text>
-          <text class="sub">{{item.subtitle}}</text>
+      <block wx:for="{{menuItems}}" wx:for-item="item" wx:for-index="index" wx:key="key">
+        <view
+          class="menu-line {{index === menuItems.length - 1 ? 'last' : ''}}"
+          bindtap="navigateToMenu"
+          data-key="{{item.key}}"
+        >
+          <view class="menu-texts">
+            <text class="lab">{{item.title}}</text>
+            <text class="sub">{{item.subtitle}}</text>
+          </view>
+          <view class="menu-side">
+            <view wx:if="{{item.badge}}" class="notif-dot"></view>
+            <text class="arr">></text>
+          </view>
         </view>
-        <view class="menu-side">
-          <view wx:if="{{item.badge}}" class="notif-dot"></view>
-          <text class="arr">></text>
-        </view>
-      </view>
+      </block>
     </view>
 
     <view class="actions-footer">
@@ -214,3 +206,11 @@
     </view>
   </view>
 </scroll-view>
+
+<contact-dialog
+  visible="{{contactDialogVisible}}"
+  qr-src="/assets/medals/kefu.png"
+  bindclose="hideContactDialog"
+/>
+
+<share-fab id="shareFab" page-name="profile" />

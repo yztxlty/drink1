@@ -6,10 +6,14 @@
     "pages/profile/profile",
     "pages/profile/edit",
     "pages/settings/settings",
+    "pages/data-management/data-management",
     "pages/medals/medals",
     "pages/privacy/privacy",
     "pages/about/about"
   ],
+  "usingComponents": {
+    "share-fab": "/components/share-fab/share-fab"
+  },
   "window": {
     "backgroundColor": "#f5f7f9",
     "backgroundTextStyle": "light",
@@ -19,6 +23,7 @@
     "navigationStyle": "custom"
   },
   "tabBar": {
+    "custom": true,
     "color": "#9a9d9f",
     "selectedColor": "#005f9b",
     "backgroundColor": "#ffffff",

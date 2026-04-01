@@ -1,6 +1,8 @@
 const app = getApp();
 const { COPY } = require('../../utils/copy');
+const { HOME_AI_RECOMMENDATION } = require('../../utils/home-ai-recommend');
 const { resolveQuickLogAmount } = require('../../utils/home');
+const SHARE_PATH = '/pages/home/home';
 
 function buildSelectedCupScrollId(amount) {
   return `quick-pick-item-${amount}`;
@@ -13,6 +15,37 @@ function normalizeCustomAmount(value) {
   }
 
   return Math.max(50, Math.round(safeValue / 50) * 50);
+}
+
+function buildAiChatRecommendationState(visible) {
+  return {
+    visible,
+    title: HOME_AI_RECOMMENDATION.title,
+    subtitle: HOME_AI_RECOMMENDATION.subtitle,
+    hint: HOME_AI_RECOMMENDATION.hint,
+    actionLabel: HOME_AI_RECOMMENDATION.actionLabel,
+    closeLabel: HOME_AI_RECOMMENDATION.closeLabel,
+    badgeLabel: HOME_AI_RECOMMENDATION.badgeLabel,
+    appId: HOME_AI_RECOMMENDATION.appId,
+    path: HOME_AI_RECOMMENDATION.path,
+    sourceLink: HOME_AI_RECOMMENDATION.sourceLink
+  };
+}
+
+function readAiChatRecommendationHiddenUntil() {
+  if (typeof wx === 'undefined' || typeof wx.getStorageSync !== 'function') {
+    return 0;
+  }
+
+  const value = wx.getStorageSync(HOME_AI_RECOMMENDATION.storageKey);
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function buildShareTitle(intake, streakDays) {
+  const safeIntake = Math.max(0, Math.round(Number(intake) || 0));
+  const safeStreakDays = Math.max(0, Math.round(Number(streakDays) || 0));
+  return `我今天已喝水 ${safeIntake}ml，已连续坚持 ${safeStreakDays} 天，快来加入我吧！`;
 }
 
 Page({
@@ -54,19 +87,48 @@ Page({
     customAmount: 250,
     showGoalCelebration: false,
     celebrationMedal: '',
-    celebrationMessage: ''
+    celebrationMessage: '',
+    aiChatRecommendation: buildAiChatRecommendationState(true)
   },
 
   onLoad() {
     this.store = app.globalData.store;
     this.refreshPageData();
+    this.refreshAiChatRecommendationVisibility();
   },
 
   onShow() {
     if (this.store) {
       this.store.syncSessionHeartbeat();
     }
+    const tabBar = typeof this.getTabBar === 'function' ? this.getTabBar() : null;
+    if (tabBar && typeof tabBar.setData === 'function') {
+      tabBar.setData({ selected: 0 });
+    }
     this.refreshPageData();
+    this.refreshAiChatRecommendationVisibility();
+  },
+
+  onShareAppMessage() {
+    const shareFab = typeof this.selectComponent === 'function'
+      ? this.selectComponent('#shareFab')
+      : null;
+
+    if (shareFab && typeof shareFab.getShareContent === 'function') {
+      return shareFab.getShareContent();
+    }
+
+    return {
+      title: buildShareTitle(this.data.intake, this.data.streakDays),
+      path: SHARE_PATH
+    };
+  },
+
+  onShareTimeline() {
+    return {
+      title: buildShareTitle(this.data.intake, this.data.streakDays),
+      query: 'from=timeline'
+    };
   },
 
   refreshPageData() {
@@ -92,6 +154,60 @@ Page({
         ? (hasMoreTodayRecords ? '～下拉显示更多～' : '～到底了～')
         : ''
     });
+  },
+
+  refreshAiChatRecommendationVisibility() {
+    const hiddenUntil = readAiChatRecommendationHiddenUntil();
+    const visible = !(hiddenUntil > 0 && Date.now() < hiddenUntil);
+
+    this.setData({
+      aiChatRecommendation: buildAiChatRecommendationState(visible)
+    });
+  },
+
+  hideAiChatRecommendation() {
+    const hiddenUntil = Date.now() + HOME_AI_RECOMMENDATION.cooldownMs;
+    if (typeof wx !== 'undefined' && typeof wx.setStorageSync === 'function') {
+      wx.setStorageSync(HOME_AI_RECOMMENDATION.storageKey, hiddenUntil);
+    }
+
+    this.setData({
+      aiChatRecommendation: buildAiChatRecommendationState(false)
+    });
+  },
+
+  goAiChatRecommendation() {
+    if (!this.data.aiChatRecommendation.visible) {
+      return;
+    }
+
+    if (typeof wx === 'undefined' || typeof wx.navigateToMiniProgram !== 'function') {
+      if (typeof wx !== 'undefined' && typeof wx.showToast === 'function') {
+        wx.showToast({
+          title: '当前环境暂不支持跳转',
+          icon: 'none'
+        });
+      }
+      return;
+    }
+
+    const navigateOptions = {
+      appId: HOME_AI_RECOMMENDATION.appId,
+      envVersion: 'release',
+      success: () => {},
+      fail: () => {
+        wx.showToast({
+          title: '跳转失败，请稍后重试',
+          icon: 'none'
+        });
+      }
+    };
+
+    if (HOME_AI_RECOMMENDATION.path) {
+      navigateOptions.path = HOME_AI_RECOMMENDATION.path;
+    }
+
+    wx.navigateToMiniProgram(navigateOptions);
   },
 
   loadMoreTodayRecords() {
@@ -157,8 +273,11 @@ Page({
       this.store.setSelectedCupAmount(customAmount);
     }
 
+    const homeViewModel = this.store ? this.store.getHomeViewModel() : null;
+
     this.setData({
-      selectedCup: customAmount,
+      selectedCup: homeViewModel ? homeViewModel.selectedCup : customAmount,
+      quickAmounts: homeViewModel ? homeViewModel.quickAmounts : this.data.quickAmounts,
       customAmount,
       customPanelVisible: false,
       selectedCupScrollId: buildSelectedCupScrollId(customAmount)

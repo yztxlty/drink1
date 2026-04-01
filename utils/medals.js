@@ -2,7 +2,7 @@ const MEDAL_DEFINITIONS = [
   {
     id: 'first_drop',
     name: '第一滴',
-    icon: '/assets/medals/first_drop.png',
+    icon: '/assets/medals/first_drop_1774940900629-removebg-preview.png',
     description: '完成第一次补水记录',
     category: 'record',
     target: 1,
@@ -13,7 +13,7 @@ const MEDAL_DEFINITIONS = [
   {
     id: 'goal_once',
     name: '今日达标',
-    icon: '/assets/medals/goal_once.png',
+    icon: '/assets/medals/goal_once_1774940991838-removebg-preview.png',
     description: '任意一天完成补水目标',
     category: 'goal',
     target: 1,
@@ -24,7 +24,7 @@ const MEDAL_DEFINITIONS = [
   {
     id: 'streak_3',
     name: '连续起航',
-    icon: '/assets/medals/streak_3.png',
+    icon: '/assets/medals/streak_3_1774941012146-removebg-preview.png',
     description: '连续达标 3 天',
     category: 'streak',
     target: 3,
@@ -35,7 +35,7 @@ const MEDAL_DEFINITIONS = [
   {
     id: 'streak_7',
     name: '稳定补水者',
-    icon: '/assets/medals/streak_7.png',
+    icon: '/assets/medals/streak_7_1774941028879-removebg-preview.png',
     description: '连续达标 7 天',
     category: 'streak',
     target: 7,
@@ -46,7 +46,7 @@ const MEDAL_DEFINITIONS = [
   {
     id: 'early_bird',
     name: '晨曦之饮',
-    icon: '/assets/medals/early_bird.png',
+    icon: '/assets/medals/early_bird_1774941067791-removebg-preview.png',
     description: '早晨 9 点前完成 5 次记录',
     category: 'habit',
     target: 5,
@@ -57,7 +57,7 @@ const MEDAL_DEFINITIONS = [
   {
     id: 'night_guard',
     name: '夜间守护',
-    icon: '/assets/medals/night_guard.png',
+    icon: '/assets/medals/night_guard_1774941109300-removebg-preview.png',
     description: '晚间 21 点后完成 5 次记录',
     category: 'habit',
     target: 5,

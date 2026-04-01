@@ -1,0 +1,22 @@
+<button
+  class="share-fab-root {{ready ? 'is-ready' : ''}} {{expanded ? 'is-expanded' : 'is-collapsed'}} {{dragging ? 'is-dragging' : ''}} {{pressed ? 'is-pressed' : ''}}"
+  style="top: {{top}}px; width: {{width}}px; height: {{height}}px; right: {{right}}; transform: translate3d({{translateX}}px, 0, 0);"
+  open-type="share"
+  hover-class="none"
+  bindtap="onShareTap"
+  bindtouchstart="onTouchStart"
+  bindtouchmove="onTouchMove"
+  bindtouchend="onTouchEnd"
+  bindtouchcancel="onTouchCancel"
+>
+  <view class="share-fab-shell">
+    <view class="share-fab-ripple share-fab-ripple-a"></view>
+    <view class="share-fab-ripple share-fab-ripple-b"></view>
+    <view class="share-fab-sheen"></view>
+
+    <view class="share-fab-core">
+      <view class="share-fab-orb"></view>
+      <text class="share-fab-share-text">分享</text>
+    </view>
+  </view>
+</button>

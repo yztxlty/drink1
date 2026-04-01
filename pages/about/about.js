@@ -5,7 +5,7 @@ Page({
   data: {
     copy: COPY.about,
     version: '1.0.0',
-    contact: 'drink-support@example.com'
+    contact: 'yztxlty@163.com'
   },
 
   copyContact() {

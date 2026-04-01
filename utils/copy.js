@@ -8,17 +8,30 @@ const COPY = {
     actionLabel: '记录补水',
     recordTitle: '今日补水记录'
   },
+  shareFab: {
+    title: '一起补水吧',
+    progress: [
+      '今日补水进度已达 {{percent}}%，邀你一起变水润！',
+      '今日补水进度来到 {{percent}}%，一起把状态拉满吧！',
+      '今天已经完成 {{percent}}% 的补水目标，来接力打卡吧！'
+    ],
+    challenge: [
+      '已连续打卡 {{streak}} 天！谁能比我更坚持？',
+      '连续补水 {{streak}} 天了，来看看谁更能坚持！',
+      '坚持打卡 {{streak}} 天，欢迎来挑战我的记录！'
+    ]
+  },
   profile: {
     navTitle: '我的补水档案',
     statusTitle: '我的补水档案',
-    actionLabel: '同步补水资料',
+    actionLabel: '数据本地保存',
     menuItems: [
       { key: 'settings', title: '补水设置', subtitle: '每日目标、水杯容量与提醒节奏' },
       { key: 'medals', title: '补水勋章', subtitle: '查看系统勋章与解锁详情', badge: true },
       { key: 'privacy', title: '补水隐私条款', subtitle: '了解补水数据如何保存' },
       { key: 'about', title: '关于补水', subtitle: '补水版本信息与反馈入口' }
     ],
-    syncToast: '已同步补水资料'
+    syncToast: '已保存到本地'
   },
   forest: {
     navTitle: '补水森林',
@@ -49,12 +62,22 @@ const COPY = {
     heroKicker: '补水设置',
     heroTitle: '把目标和提醒调成更适合你的补水节奏',
     dailyTargetTitle: '每日补水目标',
-    cupTitle: '默认单次饮水量',
-    cupNote: '这个值会同步到首页快速记录',
     reminderTitle: '补水提醒时间',
     quickTitle: '快捷容量管理',
-    sharedHint: '这里调整的单次容量会同步到首页快速记录。',
+    sharedHint: '这里调整的快捷容量会同步到首页快速记录。',
+    quickHint: '点选可切换默认容量，点击修改图标进入删除模式。',
+    quickDeleteHint: '删除模式已开启，点击右上角删除图标即可移除容量。',
+    quickManageHint: '点选可切换默认容量，点击修改图标进入删除模式。',
+    quickDeleteModeTip: '点击空白处恢复到正常显示状态。',
+    quickAddLabel: '添加容量',
+    quickAddDialogTitle: '添加快捷容量',
+    quickAddDialogHint: '以 50ml 为单位设置新的快捷容量',
+    quickAddDialogTip: '保存后会立即出现在列表中，并设为当前默认容量。',
+    quickAddConfirm: '确定',
     exportHint: '同步补水资料会导出标准 JSON 到本机存储。',
+    dataManagementTitle: '数据管理',
+    dataManagementSubtitle: '删除当天数据或清空历史业务数据',
+    dataManagementAction: '进入',
     saveLabel: '保存补水设置',
     savedToast: '补水设置已保存',
     reminderItems: [
@@ -63,6 +86,28 @@ const COPY = {
       { key: 'evening', label: '傍晚补水提醒', hint: '18:30' },
       { key: 'night', label: '睡前补水提醒', hint: '21:30' }
     ]
+  },
+  dataManagement: {
+    navTitle: '数据管理',
+    heroKicker: '数据管理',
+    heroTitle: '仅清空业务数据，不影响账号资料与补水设置',
+    warning: '请慎重操作，删除后无法找回',
+    deleteTodayTitle: '删除当天数据',
+    deleteTodaySubtitle: '仅删除今天的补水记录与联动统计',
+    clearHistoryTitle: '清空历史数据',
+    clearHistorySubtitle: '仅清空业务数据：补水记录与勋章进度',
+    todayStatsLabel: '今日记录',
+    allStatsLabel: '历史记录',
+    deleteTodayAction: '删除当天数据',
+    clearHistoryAction: '清空历史数据',
+    deleteTodayConfirmTitle: '删除当天数据',
+    deleteTodayConfirmContent: '请慎重操作，删除后无法找回。\n\n确定删除今天的补水数据吗？',
+    clearHistoryConfirmTitle: '清空历史数据',
+    clearHistoryConfirmContent: '请慎重操作，删除后无法找回。\n\n确定清空全部历史业务数据吗？',
+    secondConfirmTitle: '最终确认',
+    secondConfirmContent: '再次确认：该操作无法撤销。',
+    deleteTodaySuccess: '已删除当天数据',
+    clearHistorySuccess: '已清空历史业务数据'
   },
   profileEdit: {
     navTitle: '编辑补水资料',

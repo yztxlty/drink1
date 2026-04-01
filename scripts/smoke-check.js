@@ -49,6 +49,20 @@ function checkAppRoutes() {
   });
 }
 
+function checkCustomTabBar() {
+  const scriptPath = path.join(root, 'scripts/check-custom-tab-bar.js');
+  if (!fs.existsSync(scriptPath)) {
+    addFailure('Missing custom tab bar regression check');
+    return;
+  }
+
+  try {
+    require(scriptPath);
+  } catch (error) {
+    addFailure(`Custom tab bar regression check failed: ${error.message}`);
+  }
+}
+
 function checkLocalAssetRefs() {
   const sourceFiles = walk('pages').concat(walk('components'));
   const assetRefPatterns = [
@@ -149,22 +163,17 @@ function checkHomeHydrationLogic() {
 }
 
 function checkLoginAgreement() {
-  const loginWxml = fs.readFileSync(path.join(root, 'pages/login/login.wxml'), 'utf8');
-  const loginJs = fs.readFileSync(path.join(root, 'pages/login/login.js'), 'utf8');
+  const scriptPath = path.join(root, 'scripts/check-login-flow.js');
+  if (!fs.existsSync(scriptPath)) {
+    addFailure('Missing login flow regression check');
+    return;
+  }
 
-  const requiredMarkers = [
-    'checkbox-group',
-    'bindchange="onAgreementChange"',
-    'disabled="{{loading || !agreed}}"',
-    'agreed: true',
-    'if (!this.data.agreed)'
-  ];
-
-  requiredMarkers.forEach((marker) => {
-    if (!loginWxml.includes(marker) && !loginJs.includes(marker)) {
-      addFailure(`Login page is missing required agreement behavior: ${marker}`);
-    }
-  });
+  try {
+    require(scriptPath);
+  } catch (error) {
+    addFailure(`Login flow regression check failed: ${error.message}`);
+  }
 }
 
 function checkLoginHintRemoved() {
@@ -281,11 +290,14 @@ function checkProfileDashboardAndMedalAssets() {
   if (profileWxss.includes('grayscale(') || medalsWxss.includes('grayscale(')) {
     addFailure('Medal showcase should keep icons in highlighted mode instead of grayscale');
   }
-  if (!settingsWxml.includes('bindchange="onCupChange"')) {
-    addFailure('Settings page should expose the default cup slider');
+  if (!settingsWxml.includes('bindchanging="onGoalChanging"')) {
+    addFailure('Settings page should expose live target slider updates');
   }
-  if (!settingsWxml.includes('{{copy.sharedHint}}')) {
-    addFailure('Settings page should explain the shared cup behavior');
+  if (!settingsWxml.includes('<quick-amount-manager')) {
+    addFailure('Settings page should render the quick amount manager component');
+  }
+  if (!settingsJsonUsesQuickAmountComponent()) {
+    addFailure('Settings page should register the quick amount manager component');
   }
   if (!store.exportHydrationData || typeof store.exportHydrationData !== 'function') {
     addFailure('Store should expose exportHydrationData()');
@@ -295,9 +307,117 @@ function checkProfileDashboardAndMedalAssets() {
   }
 }
 
+function settingsJsonUsesQuickAmountComponent() {
+  const settingsJson = readJson('pages/settings/settings.json');
+  return Boolean(
+    settingsJson &&
+      settingsJson.usingComponents &&
+      settingsJson.usingComponents['quick-amount-manager']
+  );
+}
+
+function checkProfileChartMedalExportFlow() {
+  const scriptPath = path.join(root, 'scripts/check-profile-chart-medal-export.js');
+  if (!fs.existsSync(scriptPath)) {
+    addFailure('Missing profile chart/medal/export regression check');
+    return;
+  }
+
+  try {
+    require(scriptPath);
+  } catch (error) {
+    addFailure(`Profile chart/medal/export regression check failed: ${error.message}`);
+  }
+}
+
+function checkHomeAiRecommendation() {
+  const scriptPath = path.join(root, 'scripts/check-home-ai-recommendation.js');
+  if (!fs.existsSync(scriptPath)) {
+    addFailure('Missing home AI recommendation regression check');
+    return;
+  }
+
+  try {
+    require(scriptPath);
+  } catch (error) {
+    addFailure(`Home AI recommendation regression check failed: ${error.message}`);
+  }
+}
+
+function checkAppStartupModernization() {
+  const scriptPath = path.join(root, 'scripts/check-app-startup-modernization.js');
+  if (!fs.existsSync(scriptPath)) {
+    addFailure('Missing app startup modernization regression check');
+    return;
+  }
+
+  try {
+    require(scriptPath);
+  } catch (error) {
+    addFailure(`App startup modernization regression check failed: ${error.message}`);
+  }
+}
+
+function checkProfileChartAlignment() {
+  const scriptPath = path.join(root, 'scripts/check-profile-chart-alignment.js');
+  if (!fs.existsSync(scriptPath)) {
+    addFailure('Missing profile chart alignment regression check');
+    return;
+  }
+
+  try {
+    require(scriptPath);
+  } catch (error) {
+    addFailure(`Profile chart alignment regression check failed: ${error.message}`);
+  }
+}
+
+function checkContactFeature() {
+  const scriptPath = path.join(root, 'scripts/check-contact-feature.js');
+  if (!fs.existsSync(scriptPath)) {
+    addFailure('Missing contact feature regression check');
+    return;
+  }
+
+  try {
+    require(scriptPath);
+  } catch (error) {
+    addFailure(`Contact feature regression check failed: ${error.message}`);
+  }
+}
+
+function checkDataManagementFlow() {
+  const scriptPath = path.join(root, 'scripts/check-data-management.js');
+  if (!fs.existsSync(scriptPath)) {
+    addFailure('Missing data management regression check');
+    return;
+  }
+
+  try {
+    require(scriptPath);
+  } catch (error) {
+    addFailure(`Data management regression check failed: ${error.message}`);
+  }
+}
+
+function checkDataManagementBehavior() {
+  const scriptPath = path.join(root, 'scripts/check-data-management-behavior.js');
+  if (!fs.existsSync(scriptPath)) {
+    addFailure('Missing data management behavior regression check');
+    return;
+  }
+
+  try {
+    require(scriptPath);
+  } catch (error) {
+    addFailure(`Data management behavior regression check failed: ${error.message}`);
+  }
+}
+
 function main() {
-  checkAppRoutes();
-  checkLocalAssetRefs();
+checkAppRoutes();
+checkCustomTabBar();
+checkLocalAssetRefs();
   checkProjectConfig();
   checkHomepageStructure();
   checkHomeViewModel();
@@ -310,6 +430,13 @@ function main() {
   checkCopyVocabulary();
   checkAuxiliaryCopy();
   checkProfileDashboardAndMedalAssets();
+  checkProfileChartMedalExportFlow();
+  checkHomeAiRecommendation();
+  checkAppStartupModernization();
+  checkProfileChartAlignment();
+  checkContactFeature();
+  checkDataManagementFlow();
+  checkDataManagementBehavior();
 
   if (failures.length) {
     console.error('Smoke check failed:');

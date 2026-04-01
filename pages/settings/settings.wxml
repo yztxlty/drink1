@@ -5,8 +5,8 @@
       <text class="hero-kicker">{{copy.heroKicker}}</text>
       <text class="hero-title">{{copy.heroTitle}}</text>
       <view class="hero-chip-row">
-        <view class="hero-chip">目标 {{settings.dailyGoal}}ml</view>
-        <view class="hero-chip">单次 {{settings.selectedCupAmount}}ml</view>
+        <view class="hero-chip">目标 {{settings.dailyTarget}}ml</view>
+        <view class="hero-chip">默认 {{settings.selectedCupAmount}}ml</view>
         <view class="hero-chip">本地保存</view>
       </view>
     </view>
@@ -14,13 +14,14 @@
     <view class="section-card glass-card">
       <view class="section-head">
         <text class="section-title">{{copy.dailyTargetTitle}}</text>
-        <text class="section-value">{{settings.dailyGoal}}ml</text>
+        <text class="section-value">{{settings.dailyTarget}}ml</text>
       </view>
       <slider
         min="800"
         max="3500"
         step="100"
-        value="{{settings.dailyGoal}}"
+        value="{{settings.dailyTarget}}"
+        bindchanging="onGoalChanging"
         bindchange="onGoalChange"
         activeColor="#005f9b"
         backgroundColor="#dfe3e6"
@@ -33,44 +34,23 @@
     </view>
 
     <view class="section-card glass-card">
-      <view class="section-head">
-        <text class="section-title">{{copy.cupTitle}}</text>
-        <text class="section-value">{{settings.selectedCupAmount}}ml</text>
-      </view>
-      <slider
-        min="50"
-        max="1000"
-        step="50"
-        value="{{settings.selectedCupAmount}}"
-        bindchange="onCupChange"
-        activeColor="#005f9b"
-        backgroundColor="#dfe3e6"
-        block-size="22"
+      <quick-amount-manager
+        quickAmounts="{{settings.quickAmounts}}"
+        selectedAmount="{{settings.selectedCupAmount}}"
+        title="{{copy.quickTitle}}"
+        manageHint="{{copy.quickManageHint}}"
+        deleteHint="{{copy.quickDeleteHint}}"
+        sharedHint="{{copy.sharedHint}}"
+        deleteModeTip="{{copy.quickDeleteModeTip}}"
+        addLabel="{{copy.quickAddLabel}}"
+        dialogTitle="{{copy.quickAddDialogTitle}}"
+        dialogHint="{{copy.quickAddDialogHint}}"
+        dialogTip="{{copy.quickAddDialogTip}}"
+        confirmLabel="{{copy.quickAddConfirm}}"
+        bindadd="handleQuickAmountAdd"
+        bindselect="handleQuickAmountSelect"
+        binddelete="handleQuickAmountDelete"
       />
-      <view class="range-row">
-        <text>50ml</text>
-        <text>1000ml</text>
-      </view>
-      <text class="section-note">{{copy.cupNote}}</text>
-    </view>
-
-    <view class="section-card glass-card">
-      <view class="section-head">
-        <text class="section-title">{{copy.quickTitle}}</text>
-        <text class="section-note">点选可切换默认容量</text>
-      </view>
-      <view class="chip-grid">
-        <view
-          class="amount-chip {{settings.quickAmounts.indexOf(item) > -1 ? 'active' : ''}} {{settings.selectedCupAmount === item ? 'selected' : ''}}"
-          wx:for="{{quickAmountOptions}}"
-          wx:key="*this"
-          data-amount="{{item}}"
-          bindtap="selectAmount"
-        >
-          {{item}}ml
-        </view>
-      </view>
-      <text class="section-note">{{copy.sharedHint}}</text>
     </view>
 
     <view class="section-card glass-card">
@@ -97,6 +77,16 @@
     <view class="section-card glass-card">
       <text class="section-title">导出说明</text>
       <text class="section-body">{{copy.exportHint}}</text>
+    </view>
+
+    <view class="section-card glass-card data-management-entry" bindtap="goDataManagement">
+      <view class="section-head data-management-head">
+        <view>
+          <text class="section-title">{{copy.dataManagementTitle}}</text>
+          <text class="section-note">{{copy.dataManagementSubtitle}}</text>
+        </view>
+        <text class="data-management-action">{{copy.dataManagementAction}} ></text>
+      </view>
     </view>
 
     <button class="primary-btn save-btn" bindtap="saveSettings">{{copy.saveLabel}}</button>

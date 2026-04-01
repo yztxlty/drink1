@@ -39,7 +39,10 @@ expectIncludes('pages/medals/medals.wxml', '{{copy.heroTitle}}', 'Medals page sh
 
 expectIncludes('pages/profile/profile.wxml', 'wx:for="{{menuItems}}"', 'Profile page menu should be data-driven');
 expectIncludes('pages/profile/profile.wxml', '{{copy.actionLabel}}', 'Profile export button should reuse the shared action label');
-expectIncludes('pages/home/home.wxml', '{{statusBar.actionLabel}}', 'Home quick action should reuse the shared action label');
+assert.ok(
+  !read('pages/home/home.wxml').includes('actionLabel="{{statusBar.actionLabel}}"'),
+  'Home page should hide the top-right quick action'
+);
 expectIncludes('pages/explore/explore.wxml', '{{statusBar.actionLabel}}', 'Forest quick action should reuse the shared action label');
 
 console.log('Copy vocabulary check passed.');

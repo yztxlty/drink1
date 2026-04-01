@@ -15,8 +15,6 @@
       subtitle="{{statusBar.subtitle}}"
       metricValue="{{statusBar.metricValue}}"
       metricLabel="{{statusBar.metricLabel}}"
-      actionLabel="{{statusBar.actionLabel}}"
-      bindaction="logWater"
     />
 
     <view class="home-hero glass-card">
@@ -102,6 +100,25 @@
       </button>
     </view>
 
+    <view
+      wx:if="{{aiChatRecommendation.visible}}"
+      class="ai-recommend-card glass-card"
+      bindtap="goAiChatRecommendation"
+    >
+      <view class="ai-recommend-head">
+        <view class="ai-recommend-badge">{{aiChatRecommendation.badgeLabel}}</view>
+        <view class="ai-recommend-copy">
+          <text class="ai-recommend-title">{{aiChatRecommendation.title}}</text>
+          <text class="ai-recommend-desc">{{aiChatRecommendation.subtitle}}</text>
+        </view>
+        <view class="ai-recommend-close" catchtap="hideAiChatRecommendation">{{aiChatRecommendation.closeLabel}}</view>
+      </view>
+      <text class="ai-recommend-hint">{{aiChatRecommendation.hint}}</text>
+      <view class="ai-recommend-footer">
+        <text class="ai-recommend-action">{{aiChatRecommendation.actionLabel}}</text>
+      </view>
+    </view>
+
     <view class="record-card glass-card home-history">
       <view class="record-head">
         <view>
@@ -136,3 +153,5 @@
     <view class="bottom-space"></view>
   </view>
 </scroll-view>
+
+<share-fab id="shareFab" page-name="home" percent="{{progressPercent}}" streak="{{streakDays}}" />

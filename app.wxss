@@ -185,6 +185,12 @@ button {
   pointer-events: none;
 }
 
+page .container.home-page,
+page .container.forest-page,
+page .container.profile-page {
+  padding-bottom: 180rpx;
+}
+
 @keyframes breathing {
   0%,
   100% {

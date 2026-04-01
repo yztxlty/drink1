@@ -80,7 +80,7 @@ assert.deepStrictEqual(
 assert.strictEqual(home.todayRecordCount, 2, 'Home view model should expose the count of today records');
 assert.strictEqual(home.todayStatus.level, 'normal', 'Header state should be normal while under target');
 assert.strictEqual(home.heroStatLabel, '连续天数', 'Header stat should stay on streak mode while under target');
-assert.strictEqual(home.heroStatValue, '0 天', 'Header stat should reflect the streak when under target');
+assert.strictEqual(home.heroStatValue, '2 天', 'Header stat should reflect the consecutive drinking streak when under target');
 assert.strictEqual(home.todayGoalText, '还差 1650 ml', 'Goal text should reflect the remaining amount');
 
 console.log('Home view model check passed.');

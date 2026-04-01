@@ -1,0 +1,55 @@
+<!-- pages/data-management/data-management.wxml -->
+<scroll-view class="scrollarea" scroll-y>
+  <view class="container data-management-page">
+    <view class="hero-card glass-card">
+      <text class="hero-kicker">{{copy.heroKicker}}</text>
+      <text class="hero-title">{{copy.heroTitle}}</text>
+      <view class="hero-chip-row">
+        <view class="hero-chip">{{copy.todayStatsLabel}} {{stats.todayRecordCount}} 条</view>
+        <view class="hero-chip">{{copy.allStatsLabel}} {{stats.totalRecordCount}} 条</view>
+        <view class="hero-chip">{{stats.totalLitres}}L</view>
+      </view>
+    </view>
+
+    <view class="warning-card glass-card">
+      <text class="warning-text">{{copy.warning}}</text>
+    </view>
+
+    <view wx:if="{{notice.visible}}" class="weak-notice-floating show">
+      <text class="weak-notice-text">{{notice.text}}</text>
+    </view>
+
+    <view wx:if="{{pendingAction.visible}}" class="pending-card glass-card">
+      <view class="pending-header">
+        <view class="pending-badge">⚠</view>
+        <view class="pending-copy">
+          <text class="pending-kicker">系统级危险操作</text>
+          <text class="pending-title">{{pendingAction.title}}</text>
+        </view>
+      </view>
+      <text class="pending-body">{{pendingAction.content}}</text>
+      <view class="pending-action-row">
+        <button class="pending-confirm-btn" plain="true" bindtap="confirmPendingAction">{{pendingAction.confirmText}}</button>
+        <button class="pending-cancel-btn" plain="true" bindtap="cancelPendingAction">取消</button>
+      </view>
+    </view>
+
+    <view class="action-card glass-card">
+      <text class="action-title">{{copy.deleteTodayTitle}}</text>
+      <text class="action-subtitle">{{copy.deleteTodaySubtitle}}</text>
+      <text class="action-meta">今日总量 {{stats.todayAmount}}ml</text>
+      <button class="danger-action" plain="true" hover-class="danger-action-hover" bindtap="deleteTodayData">
+        {{copy.deleteTodayAction}}
+      </button>
+    </view>
+
+    <view class="action-card glass-card">
+      <text class="action-title">{{copy.clearHistoryTitle}}</text>
+      <text class="action-subtitle">{{copy.clearHistorySubtitle}}</text>
+      <text class="action-meta">历史总量 {{stats.totalLitres}}L</text>
+      <button class="danger-action" plain="true" hover-class="danger-action-hover" bindtap="clearHistoryData">
+        {{copy.clearHistoryAction}}
+      </button>
+    </view>
+  </view>
+</scroll-view>

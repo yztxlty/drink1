@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "补水设置",
-  "usingComponents": {}
+  "usingComponents": {
+    "quick-amount-manager": "/components/quick-amount-manager/quick-amount-manager"
+  }
 }

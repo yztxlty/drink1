@@ -20,11 +20,19 @@ function clone(value) {
 }
 
 function readStorage(key) {
-  return getStorageDriver().getStorageSync(key);
+  try {
+    return getStorageDriver().getStorageSync(key);
+  } catch (error) {
+    return memoryStorage[key];
+  }
 }
 
 function writeStorage(key, value) {
-  getStorageDriver().setStorageSync(key, value);
+  try {
+    getStorageDriver().setStorageSync(key, value);
+  } catch (error) {
+    memoryStorage[key] = value;
+  }
   return value;
 }
 

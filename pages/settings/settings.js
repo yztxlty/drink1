@@ -1,9 +1,16 @@
 const app = getApp()
 const { COPY } = require('../../utils/copy')
+const {
+  DEFAULT_QUICK_AMOUNTS,
+  DEFAULT_SELECTED_AMOUNT,
+  normalizeQuickAmounts,
+  resolveFallbackSelectedCup
+} = require('../../utils/quick-amounts')
 
 const DEFAULT_SETTINGS = {
-  dailyGoal: 2000,
-  quickAmounts: [150, 250, 500],
+  dailyTarget: 2000,
+  quickAmounts: DEFAULT_QUICK_AMOUNTS,
+  selectedCupAmount: DEFAULT_SELECTED_AMOUNT,
   reminders: {
     morning: true,
     noon: true,
@@ -16,8 +23,7 @@ Page({
   data: {
     copy: COPY.settings,
     settings: DEFAULT_SETTINGS,
-    reminderItems: COPY.settings.reminderItems,
-    quickAmountOptions: [150, 250, 300, 500, 750, 1000]
+    reminderItems: COPY.settings.reminderItems
   },
 
   onShow() {
@@ -27,19 +33,26 @@ Page({
 
   loadSettings() {
     const cached = this.store ? this.store.ensureState().settings : wx.getStorageSync('drink_settings') || {}
+    const normalized = this.normalizeSettings(cached)
     this.setData({
-      settings: this.normalizeSettings(cached)
+      settings: normalized
     })
   },
 
   normalizeSettings(source) {
     // 做一层兜底，避免老版本存储字段缺失时页面空白。
+    const quickAmounts = normalizeQuickAmounts(source.quickAmounts)
+    const dailyTarget = Number.isFinite(Number(source.dailyTarget))
+      ? Number(source.dailyTarget)
+      : Number(source.dailyGoal)
+    const selectedCupAmount = Number(source.selectedCupAmount)
+
     return {
-      dailyGoal: Number(source.dailyGoal) || DEFAULT_SETTINGS.dailyGoal,
-      quickAmounts:
-        Array.isArray(source.quickAmounts) && source.quickAmounts.length
-          ? source.quickAmounts
-          : DEFAULT_SETTINGS.quickAmounts,
+      dailyTarget: dailyTarget > 0 ? dailyTarget : DEFAULT_SETTINGS.dailyTarget,
+      quickAmounts,
+      selectedCupAmount: quickAmounts.includes(selectedCupAmount)
+        ? selectedCupAmount
+        : (quickAmounts[1] || quickAmounts[0] || DEFAULT_SETTINGS.selectedCupAmount),
       reminders: {
         ...DEFAULT_SETTINGS.reminders,
         ...(source.reminders || {})
@@ -47,24 +60,25 @@ Page({
     }
   },
 
-  onGoalChange(e) {
-    const dailyGoal = Number(e.detail.value)
-    this.commitSettings({
-      ...this.data.settings,
-      dailyGoal
+  onGoalChanging(e) {
+    const dailyTarget = Number(e.detail.value)
+    if (!Number.isFinite(dailyTarget) || dailyTarget <= 0) {
+      return
+    }
+
+    this.setData({
+      settings: {
+        ...this.data.settings,
+        dailyTarget
+      }
     })
   },
 
-  onCupChange(e) {
-    const selectedCupAmount = Number(e.detail.value)
-    const quickAmounts = this.data.settings.quickAmounts.includes(selectedCupAmount)
-      ? this.data.settings.quickAmounts
-      : [...this.data.settings.quickAmounts, selectedCupAmount].sort((a, b) => a - b)
-
+  onGoalChange(e) {
+    const dailyTarget = Number(e.detail.value)
     this.commitSettings({
       ...this.data.settings,
-      quickAmounts,
-      selectedCupAmount
+      dailyTarget
     })
   },
 
@@ -80,18 +94,55 @@ Page({
     })
   },
 
-  selectAmount(e) {
-    const amount = Number(e.currentTarget.dataset.amount)
-    const quickAmounts = this.data.settings.quickAmounts.includes(amount)
-      ? this.data.settings.quickAmounts
-      : [...this.data.settings.quickAmounts, amount].sort((a, b) => a - b)
+  handleQuickAmountAdd(e) {
+    const amount = Number(e.detail && e.detail.amount)
+    if (!Number.isFinite(amount) || amount <= 0) {
+      return
+    }
 
+    const quickAmounts = normalizeQuickAmounts([...this.data.settings.quickAmounts, amount])
     this.commitSettings({
       ...this.data.settings,
       quickAmounts,
       selectedCupAmount: amount
     })
   },
+
+  handleQuickAmountSelect(e) {
+    const amount = Number(e.detail && e.detail.amount)
+    if (!Number.isFinite(amount) || amount <= 0) {
+      return
+    }
+
+    this.commitSettings({
+      ...this.data.settings,
+      selectedCupAmount: amount
+    })
+  },
+
+  handleQuickAmountDelete(e) {
+    const amount = Number(e.detail && e.detail.amount)
+    if (!Number.isFinite(amount) || amount <= 0) {
+      return
+    }
+
+    const quickAmounts = normalizeQuickAmounts(
+      this.data.settings.quickAmounts.filter((item) => Number(item) !== amount)
+    )
+    const selectedCupAmount = resolveFallbackSelectedCup(
+      quickAmounts,
+      amount,
+      this.data.settings.selectedCupAmount
+    )
+
+    this.commitSettings({
+      ...this.data.settings,
+      quickAmounts,
+      selectedCupAmount
+    })
+  },
+
+  noop() {},
 
   commitSettings(settings) {
     const normalized = this.normalizeSettings(settings)
@@ -101,6 +152,9 @@ Page({
 
     if (this.store) {
       this.store.updateSettings(normalized)
+      if (app.globalData) {
+        app.globalData.appState = this.store.getStore()
+      }
     } else {
       wx.setStorageSync('drink_settings', normalized)
     }
@@ -110,6 +164,12 @@ Page({
     wx.showToast({
       title: COPY.settings.savedToast,
       icon: 'success'
+    })
+  },
+
+  goDataManagement() {
+    wx.navigateTo({
+      url: '/pages/data-management/data-management'
     })
   }
 })
