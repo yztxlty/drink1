@@ -1,5 +1,10 @@
 const store = require('./utils/store');
 
+const VERSION_MODE = {
+  STANDALONE: 'STANDALONE',
+  ONLINE: 'ONLINE'
+};
+
 function createFallbackAppState() {
   const now = new Date().toISOString();
 
@@ -65,7 +70,8 @@ function createFallbackAppState() {
         lastEvaluatedAt: '',
         catalogVersion: 1
       }
-    }
+    },
+    versionType: VERSION_MODE.STANDALONE
   };
 }
 
@@ -94,7 +100,9 @@ function bootstrapStore(appInstance) {
   let initialized = false;
 
   try {
-    store.initStore();
+    store.initStore({
+      versionType: appInstance.globalData.versionType
+    });
     appState = store.getStore();
     initialized = true;
   } catch (error) {
@@ -111,9 +119,11 @@ function bootstrapStore(appInstance) {
   try {
     appInstance.globalData.appState = appState;
     appInstance.globalData.userInfo = appState.user;
+    appInstance.globalData.versionType = appState.versionType || appInstance.globalData.versionType;
   } catch (error) {
     appInstance.globalData.appState = createFallbackAppState();
     appInstance.globalData.userInfo = appInstance.globalData.appState.user;
+    appInstance.globalData.versionType = appInstance.globalData.appState.versionType;
   }
 
   appInstance.globalData.storeReady = true;
@@ -131,6 +141,7 @@ function refreshGlobalState(appInstance) {
     const fallbackAppState = createFallbackAppState();
     appInstance.globalData.appState = fallbackAppState;
     appInstance.globalData.userInfo = fallbackAppState.user;
+    appInstance.globalData.versionType = fallbackAppState.versionType;
     return fallbackAppState;
   }
 }
@@ -141,6 +152,7 @@ App({
       this.globalData.store = store;
       this.globalData.storeReady = false;
       this.globalData.storeInitialized = false;
+      this.globalData.versionType = VERSION_MODE.STANDALONE;
       bootstrapStore(this);
       refreshGlobalState(this);
     } catch (error) {
@@ -163,6 +175,7 @@ App({
     store,
     storeReady: false,
     storeInitialized: false,
-    userInfo: null
+    userInfo: null,
+    versionType: VERSION_MODE.STANDALONE
   }
 });

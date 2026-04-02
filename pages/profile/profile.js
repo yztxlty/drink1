@@ -63,6 +63,8 @@ Page({
       lineSegments: [],
       linePoints: []
     },
+    shareProgressPercent: 0,
+    shareStreakDays: 0,
     badges: [],
     contactDialogVisible: false,
     profile: {
@@ -317,6 +319,9 @@ Page({
         actionLabel: COPY.profile.actionLabel
       }
     }
+    const homeViewModel = this.store && typeof this.store.getHomeViewModel === 'function'
+      ? this.store.getHomeViewModel()
+      : {}
     const profile = viewModel.profile || {}
     const profileName = profile.displayNickName || profile.nickName || '补水计划用户'
     this.setData({
@@ -332,7 +337,9 @@ Page({
         streakDays: viewModel.stats.streakDays,
         unlockedMedals: viewModel.stats.unlockedMedalCount,
         totalLiters: viewModel.stats.totalLitres
-      }
+      },
+      shareProgressPercent: Number(homeViewModel.progressPercent) || 0,
+      shareStreakDays: Number(viewModel.stats.streakDays) || Number(homeViewModel.streakDays) || 0
     })
   },
 

@@ -14,6 +14,12 @@ const {
 const STORAGE_KEY = 'drink1:state';
 const WECHAT_PROFILE_KEY = 'drink1:wechatProfile';
 const STATE_VERSION = 2;
+const VERSION_MODE = {
+  STANDALONE: 'STANDALONE',
+  ONLINE: 'ONLINE'
+};
+const APP_VERSION = '1.0.0';
+const DEFAULT_VERSION_TYPE = VERSION_MODE.STANDALONE;
 const DEFAULT_DAILY_TARGET = 2000;
 const DEFAULT_QUICK_AMOUNTS = [150, 250, 500];
 const DEFAULT_PROFILE = {
@@ -44,8 +50,63 @@ const DEFAULT_SETTINGS = {
   sleepTime: '22:30',
   privacyAccepted: false
 };
+const initialState = {
+  versionType: DEFAULT_VERSION_TYPE,
+  profile: clone(DEFAULT_PROFILE),
+  settings: clone(DEFAULT_SETTINGS),
+  session: {
+    lastOpenAt: '',
+    lastSyncAt: '',
+    hasSeenOnboarding: false
+  },
+  hydration: {
+    records: [],
+    daily: {},
+    streak: {
+      current: 0,
+      longest: 0,
+      lastQualifiedDateKey: ''
+    },
+    totals: {
+      today: 0,
+      totalAmount: 0,
+      totalRecords: 0,
+      completedDays: 0,
+      activeDays: 0,
+      averageCompletionRate: 0,
+      morningRecords: 0,
+      nightRecords: 0
+    }
+  },
+  achievements: {
+    progress: {},
+    unlockedIds: [],
+    unlockedCount: 0,
+    newlyUnlocked: [],
+    lastEvaluatedAt: '',
+    catalogVersion: 1
+  },
+  meta: {
+    createdAt: '',
+    updatedAt: ''
+  }
+};
+let runtimeVersionType = DEFAULT_VERSION_TYPE;
+
 function nowIsoString() {
   return new Date().toISOString();
+}
+
+function resolveVersionType(versionType) {
+  return versionType === VERSION_MODE.ONLINE
+    ? VERSION_MODE.ONLINE
+    : VERSION_MODE.STANDALONE;
+}
+
+function buildVersionLabel(versionType) {
+  const safeVersionType = resolveVersionType(versionType);
+  const suffix = safeVersionType === VERSION_MODE.ONLINE ? 'online' : 'lite';
+  return `v${APP_VERSION}-${suffix}`;
 }
 
 function normalizeQuickAmounts(quickAmounts) {
@@ -61,42 +122,15 @@ function normalizeQuickAmounts(quickAmounts) {
 
 function buildDefaultState() {
   const generatedAt = nowIsoString();
+  const resolvedVersionType = resolveVersionType(runtimeVersionType);
 
   return {
+    ...clone(initialState),
     version: STATE_VERSION,
-    profile: clone(DEFAULT_PROFILE),
-    settings: clone(DEFAULT_SETTINGS),
+    versionType: resolvedVersionType,
     session: {
-      lastOpenAt: generatedAt,
-      lastSyncAt: '',
-      hasSeenOnboarding: false
-    },
-    hydration: {
-      records: [],
-      daily: {},
-      streak: {
-        current: 0,
-        longest: 0,
-        lastQualifiedDateKey: ''
-      },
-      totals: {
-        today: 0,
-        totalAmount: 0,
-        totalRecords: 0,
-        completedDays: 0,
-        activeDays: 0,
-        averageCompletionRate: 0,
-        morningRecords: 0,
-        nightRecords: 0
-      }
-    },
-    achievements: {
-      progress: {},
-      unlockedIds: [],
-      unlockedCount: 0,
-      newlyUnlocked: [],
-      lastEvaluatedAt: '',
-      catalogVersion: 1
+      ...clone(initialState.session),
+      lastOpenAt: generatedAt
     },
     meta: {
       createdAt: generatedAt,
@@ -429,12 +463,14 @@ function decorateState(state) {
   };
 }
 
-function normalizeState(rawState) {
-  const defaults = buildDefaultState();
+function normalizeState(rawState, versionType = runtimeVersionType) {
+  const defaults = buildDefaultState(versionType);
   const source = rawState && typeof rawState === 'object' ? rawState : {};
+  const resolvedVersionType = resolveVersionType(source.versionType || defaults.versionType);
 
   return decorateState({
     ...defaults,
+    versionType: resolvedVersionType,
     ...source,
     profile: normalizeProfile(source.profile),
     settings: normalizeSettings(source.settings),
@@ -458,8 +494,8 @@ function normalizeState(rawState) {
   });
 }
 
-function getStateSnapshot() {
-  return normalizeState(readStorage(STORAGE_KEY));
+function getStateSnapshot(versionType = runtimeVersionType) {
+  return normalizeState(readStorage(STORAGE_KEY), versionType);
 }
 
 let cachedState = null;
@@ -467,12 +503,21 @@ let cachedState = null;
 function persistState(nextState) {
   cachedState = normalizeState(nextState);
   writeStorage(STORAGE_KEY, cachedState);
+  syncRemoteState(cachedState);
   return cachedState;
 }
 
-function ensureState() {
+function syncRemoteState(state) {
+  if (!state || state.versionType !== VERSION_MODE.ONLINE) {
+    return;
+  }
+
+  // Reserved for future ONLINE API sync wiring.
+}
+
+function ensureState(versionType = runtimeVersionType) {
   if (!cachedState) {
-    cachedState = getStateSnapshot();
+    cachedState = getStateSnapshot(versionType);
     writeStorage(STORAGE_KEY, cachedState);
   }
 
@@ -706,6 +751,17 @@ function getProfileViewModel() {
     settings: clone(state.settings),
     session: clone(state.session),
     statusBar
+  };
+}
+
+function getAboutViewModel() {
+  const state = ensureState();
+  const versionType = resolveVersionType(state.versionType);
+
+  return {
+    versionType,
+    versionLabel: buildVersionLabel(versionType),
+    versionSuffix: versionType === VERSION_MODE.ONLINE ? 'online' : 'lite'
   };
 }
 
@@ -1077,13 +1133,17 @@ function buildBusinessStore(state) {
   });
 }
 
-function initStore() {
-  ensureState();
+function initStore(options) {
+  if (options && Object.prototype.hasOwnProperty.call(options, 'versionType')) {
+    runtimeVersionType = resolveVersionType(options.versionType);
+  }
+
+  ensureState(runtimeVersionType);
   return getStore();
 }
 
 function resetToDefault() {
-  cachedState = buildDefaultState();
+  cachedState = buildDefaultState(runtimeVersionType);
   writeStorage(STORAGE_KEY, cachedState);
   return getStore();
 }
@@ -1092,6 +1152,7 @@ function getStore() {
   const state = ensureState();
 
   return {
+    versionType: state.versionType,
     user: buildUserStore(state),
     config: buildConfigStore(state.settings),
     business: buildBusinessStore(state)
@@ -1211,6 +1272,7 @@ module.exports = {
   addWaterRecord,
   clearUserStore,
   clearBusinessData,
+  getAboutViewModel,
   deleteTodayHydrationData,
   ensureState,
   getForestViewModel,
@@ -1224,6 +1286,7 @@ module.exports = {
   logout,
   markPrivacyAccepted,
   resetToDefault,
+  VERSION_MODE,
   setLoginProfile,
   setSelectedCupAmount,
   restoreWechatProfile,

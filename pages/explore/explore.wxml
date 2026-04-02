@@ -126,4 +126,4 @@
   </view>
 </scroll-view>
 
-<share-fab id="shareFab" page-name="explore" />
+<share-fab id="shareFab" page-name="explore" percent="{{shareProgressPercent}}" streak="{{shareStreakDays}}" />

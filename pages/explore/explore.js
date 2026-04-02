@@ -64,6 +64,8 @@ Page({
     oxygenValue: 0,
     collectionProgress: 0,
     collectionLabel: '0%',
+    shareProgressPercent: 0,
+    shareStreakDays: 0,
     forestLevel: 0,
     forestStatusHint: '',
     statusBar: {
@@ -166,6 +168,12 @@ Page({
     const forestViewModel = this.store && typeof this.store.getForestViewModel === 'function'
       ? this.store.getForestViewModel()
       : buildFallbackForestViewModel();
+    const homeViewModel = this.store && typeof this.store.getHomeViewModel === 'function'
+      ? this.store.getHomeViewModel()
+      : {};
+    const profileViewModel = this.store && typeof this.store.getProfileViewModel === 'function'
+      ? this.store.getProfileViewModel()
+      : {};
     const intake = this.readTodayIntake() || Number(forestViewModel.todayTotal) || 0;
     const initialDropCount = getDropCount(intake);
     const collectionProgress = getMergeProgress(initialDropCount, initialDropCount);
@@ -184,7 +192,9 @@ Page({
       reminderText: forestViewModel.reminderText || '',
       intake,
       dropCount: initialDropCount,
-      intakeEnergyLabel: buildEnergyLabel(intake)
+      intakeEnergyLabel: buildEnergyLabel(intake),
+      shareProgressPercent: collectionProgress,
+      shareStreakDays: Number(homeViewModel.streakDays) || Number(profileViewModel.stats && profileViewModel.stats.streakDays) || 0
     }, () => {
       this.measureVesselAndInitDrops();
     });
@@ -196,7 +206,8 @@ Page({
 
     this.setData({
       collectionProgress,
-      collectionLabel: buildCollectionLabel(collectionProgress)
+      collectionLabel: buildCollectionLabel(collectionProgress),
+      shareProgressPercent: collectionProgress
     });
   },
 

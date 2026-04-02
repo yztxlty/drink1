@@ -86,7 +86,7 @@ assert.ok(
   'App config should register the dedicated login authorization page'
 );
 assert.ok(
-  appJs.includes('store.initStore()'),
+  appJs.includes('store.initStore('),
   'App launch should initialize the store on startup'
 );
 

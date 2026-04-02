@@ -1,3 +1,4 @@
+const { SHARE_FAB_COPY } = require('./share/share-copy');
 const APP_NAME = '喝水了吗';
 
 const COPY = {
@@ -8,19 +9,7 @@ const COPY = {
     actionLabel: '记录补水',
     recordTitle: '今日补水记录'
   },
-  shareFab: {
-    title: '一起补水吧',
-    progress: [
-      '今日补水进度已达 {{percent}}%，邀你一起变水润！',
-      '今日补水进度来到 {{percent}}%，一起把状态拉满吧！',
-      '今天已经完成 {{percent}}% 的补水目标，来接力打卡吧！'
-    ],
-    challenge: [
-      '已连续打卡 {{streak}} 天！谁能比我更坚持？',
-      '连续补水 {{streak}} 天了，来看看谁更能坚持！',
-      '坚持打卡 {{streak}} 天，欢迎来挑战我的记录！'
-    ]
-  },
+  shareFab: SHARE_FAB_COPY,
   profile: {
     navTitle: '我的补水档案',
     statusTitle: '我的补水档案',

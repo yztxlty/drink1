@@ -1,11 +1,25 @@
-// pages/about/about.js
+const app = getApp()
 const { COPY } = require('../../utils/copy')
 
 Page({
   data: {
     copy: COPY.about,
-    version: '1.0.0',
+    version: 'v1.0.0-lite',
     contact: 'yztxlty@163.com'
+  },
+
+  onLoad() {
+    this.store = app.globalData.store || null
+
+    const aboutViewModel = this.store && typeof this.store.getAboutViewModel === 'function'
+      ? this.store.getAboutViewModel()
+      : null
+
+    this.setData({
+      version: aboutViewModel && aboutViewModel.versionLabel
+        ? aboutViewModel.versionLabel
+        : 'v1.0.0-lite'
+    })
   },
 
   copyContact() {

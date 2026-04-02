@@ -1,8 +1,15 @@
-const { COPY } = require('../../utils/copy');
+const { resolveShareContext, resolveSharePath: resolveSharePathForContext } = require('../../utils/share/share-context');
+const {
+  buildShareContent,
+  getShareHistoryKey,
+  normalizeShareHistory,
+  prependShareHistory
+} = require('../../utils/share/share-selector');
 
 // Bump the storage key when the collapsed layout changes, so stale positions
 // from older releases do not hide the fab on first render.
 const STORAGE_KEY = 'drink1:share-fab-ui-v5';
+const SHARE_HISTORY_STORAGE_KEY = getShareHistoryKey();
 const AUTO_COLLAPSE_DELAY = 5000;
 const SWIPE_THRESHOLD = 18;
 const EXPANDED_SIZE_RPX = {
@@ -14,20 +21,6 @@ const EDGE_RPX = 16;
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
-}
-
-function pickRandom(list) {
-  if (!Array.isArray(list) || !list.length) {
-    return '';
-  }
-
-  return list[Math.floor(Math.random() * list.length)];
-}
-
-function interpolate(template, values) {
-  return String(template || '').replace(/\{\{(\w+)\}\}/g, (match, key) => {
-    return Object.prototype.hasOwnProperty.call(values, key) ? values[key] : '';
-  });
 }
 
 function toNumber(value, fallback) {
@@ -249,115 +242,72 @@ Component({
       return app && app.globalData ? app.globalData.store : null;
     },
 
-    resolveRoute() {
-      if (this.data.pagePath) {
-        return this.data.pagePath.replace(/^\//, '');
-      }
-
-      if (typeof getCurrentPages !== 'function') {
-        return '';
-      }
-
-      const pages = getCurrentPages();
-      const currentPage = Array.isArray(pages) && pages.length ? pages[pages.length - 1] : null;
-      return currentPage && currentPage.route ? currentPage.route : '';
-    },
-
     resolveMetrics() {
-      const store = this.resolveStore();
-      const route = this.resolveRoute();
-      const propPercent = Number(this.data.percent);
-      const propStreak = Number(this.data.streak);
-
-      let percent = Number.isFinite(propPercent) && propPercent >= 0 ? propPercent : null;
-      let streakDays = Number.isFinite(propStreak) && propStreak >= 0 ? propStreak : null;
-      let intake = 0;
-
-      if (store) {
-        const homeViewModel = typeof store.getHomeViewModel === 'function' ? store.getHomeViewModel() || {} : {};
-        const profileViewModel = typeof store.getProfileViewModel === 'function' ? store.getProfileViewModel() || {} : {};
-
-        if (percent === null) {
-          const homePercent = Number(homeViewModel.progressPercent);
-          if (Number.isFinite(homePercent)) {
-            percent = homePercent;
-          }
-        }
-
-        if (streakDays === null) {
-          const homeStreak = Number(homeViewModel.streakDays);
-          const profileStreak = Number(profileViewModel.stats && profileViewModel.stats.streakDays);
-          if (Number.isFinite(homeStreak)) {
-            streakDays = homeStreak;
-          } else if (Number.isFinite(profileStreak)) {
-            streakDays = profileStreak;
-          }
-        }
-
-        intake = Number(homeViewModel.intake) || 0;
-      }
-
-      return {
-        percent: clamp(Math.round(Number(percent) || 0), 0, 100),
-        streakDays: Math.max(0, Math.round(Number(streakDays) || 0)),
-        intake: Math.max(0, Math.round(intake)),
-        route
-      };
+      return resolveShareContext({
+        pageName: this.data.pageName,
+        pagePath: this.data.pagePath,
+        percent: this.data.percent,
+        streak: this.data.streak,
+        store: this.resolveStore()
+      });
     },
 
     chooseShareCopy(metrics) {
-      const progressList = (COPY.shareFab && COPY.shareFab.progress) || [];
-      const challengeList = (COPY.shareFab && COPY.shareFab.challenge) || [];
-      const shouldUseProgress = metrics.percent >= 55 || metrics.streakDays < 3;
-      const shouldUseChallenge = metrics.streakDays >= 3 && metrics.percent < 85;
-      let mode = 'progress';
+      const owner = this && typeof this === 'object' ? this : {};
+      const data = owner.data || {};
+      const resolveStoreFn = typeof owner.resolveStore === 'function'
+        ? owner.resolveStore.bind(owner)
+        : () => null;
+      const safeMetrics = metrics && typeof metrics === 'object' ? metrics : {};
+      const resolvedContext = resolveShareContext({
+        pageName: safeMetrics.pageName || data.pageName,
+        pagePath: safeMetrics.pagePath || data.pagePath,
+        route: safeMetrics.route || '',
+        percent: safeMetrics.percent,
+        streak: safeMetrics.streakDays ?? safeMetrics.streak,
+        intake: safeMetrics.intake,
+        store: resolveStoreFn()
+      });
 
-      if (shouldUseChallenge && !shouldUseProgress) {
-        mode = 'challenge';
-      } else if (shouldUseProgress && !shouldUseChallenge) {
-        mode = 'progress';
-      } else {
-        mode = Math.random() > 0.5 ? 'progress' : 'challenge';
-      }
-
-      const pool = mode === 'challenge' ? challengeList : progressList;
-      const fallback = mode === 'challenge' ? progressList : challengeList;
-      const template = pickRandom(pool) || pickRandom(fallback) || (mode === 'challenge'
-        ? '已连续补水 {{streakDays}} 天，来挑战一下我的习惯！'
-        : '今日进度 {{percent}}%，补水大师养成中！');
-
-      return {
-        mode,
-        text: interpolate(template, {
-          percent: metrics.percent,
-          streakDays: metrics.streakDays,
-          intake: metrics.intake
-        })
-      };
+      return buildShareContent(resolvedContext, {
+        pageName: resolvedContext.pageName,
+        pagePath: resolvedContext.pagePath,
+        route: resolvedContext.route,
+        scene: resolvedContext.scene,
+        percent: resolvedContext.percent,
+        streakDays: resolvedContext.streakDays,
+        intake: resolvedContext.intake,
+        recentTitles: typeof owner.readShareHistory === 'function' ? owner.readShareHistory() : [],
+        randomSeed: Date.now()
+      });
     },
 
     resolveSharePath(metrics) {
-      if (this.data.pagePath) {
-        return this.data.pagePath;
+      return resolveSharePathForContext(metrics.pageName, metrics.pagePath, metrics.route);
+    },
+
+    readShareHistory() {
+      if (typeof wx === 'undefined' || typeof wx.getStorageSync !== 'function') {
+        return [];
       }
 
-      if (this.data.pageName === 'home') {
-        return '/pages/home/home';
+      try {
+        return normalizeShareHistory(wx.getStorageSync(SHARE_HISTORY_STORAGE_KEY));
+      } catch (error) {
+        return [];
+      }
+    },
+
+    persistShareHistory(history) {
+      if (typeof wx === 'undefined' || typeof wx.setStorageSync !== 'function') {
+        return;
       }
 
-      if (this.data.pageName === 'explore') {
-        return '/pages/explore/explore';
+      try {
+        wx.setStorageSync(SHARE_HISTORY_STORAGE_KEY, normalizeShareHistory(history));
+      } catch (error) {
+        // Keep sharing working even if history persistence fails.
       }
-
-      if (this.data.pageName === 'profile') {
-        return '/pages/profile/profile';
-      }
-
-      if (metrics.route) {
-        return `/${metrics.route}`;
-      }
-
-      return '/pages/home/home';
     },
 
     refreshShareCopy() {
@@ -367,16 +317,22 @@ Component({
       this.setData({
         shareMode: copy.mode,
         shareBadge: copy.mode === 'challenge' ? '连续挑战' : '今日补水',
-        sharePreview: copy.text
+        sharePreview: copy.title
       });
     },
 
     getShareContent() {
       const metrics = this.resolveMetrics();
       const copy = this.chooseShareCopy(metrics);
+      const readHistory = typeof this.readShareHistory === 'function' ? this.readShareHistory() : [];
+      const nextHistory = prependShareHistory(readHistory, copy.title);
+
+      if (typeof this.persistShareHistory === 'function') {
+        this.persistShareHistory(nextHistory);
+      }
 
       return {
-        title: copy.text,
+        title: copy.title,
         path: this.resolveSharePath(metrics)
       };
     },

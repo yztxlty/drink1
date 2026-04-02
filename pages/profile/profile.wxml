@@ -213,4 +213,4 @@
   bindclose="hideContactDialog"
 />
 
-<share-fab id="shareFab" page-name="profile" />
+<share-fab id="shareFab" page-name="profile" percent="{{shareProgressPercent}}" streak="{{shareStreakDays}}" />
