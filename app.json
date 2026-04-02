@@ -9,7 +9,8 @@
     "pages/data-management/data-management",
     "pages/medals/medals",
     "pages/privacy/privacy",
-    "pages/about/about"
+    "pages/about/about",
+    "pages/login-auth/login-auth"
   ],
   "usingComponents": {
     "share-fab": "/components/share-fab/share-fab"

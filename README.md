@@ -47,6 +47,7 @@ Drink1 is designed for users who want hydration tracking to feel lightweight, co
 - [Data & Privacy](#data--privacy)
 - [Repository Layout](#repository-layout)
 - [Contributing Notes](#contributing-notes)
+- [Code Style Guide](#code-style-guide)
 - [Open Source Policy](#open-source-policy)
 - [GitHub Home Setup](#github-home-setup)
 - [License](#license)
@@ -177,7 +178,13 @@ This repository follows a simple GitHub-friendly release model:
 - Keep reusable interaction logic in `components/` when multiple pages need it.
 - Treat `utils/store.js` as the source of truth for hydration state and derived summaries.
 - Store future README assets under `docs/readme/` so the documentation stays stable and portable.
+- For a concise onboarding version of the coding rules, see [doc/新成员速读版代码规范.md](doc/新成员速读版代码规范.md).
 - See [CONTRIBUTING.md](CONTRIBUTING.md) for the branching model, PR expectations, and release checklist.
+
+## Code Style Guide
+
+- Full guide: [doc/代码规范.md](doc/代码规范.md)
+- Quick onboarding guide: [doc/新成员速读版代码规范.md](doc/新成员速读版代码规范.md)
 - See [docs/code-style.md](docs/code-style.md) for the repository code style guide and file-level conventions.
 
 ## Open Source Policy

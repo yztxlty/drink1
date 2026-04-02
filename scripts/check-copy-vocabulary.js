@@ -20,6 +20,7 @@ expectIncludes('pages/home/home.json', COPY.home.navTitle, 'Home navigation titl
 expectIncludes('pages/profile/profile.json', COPY.profile.navTitle, 'Profile navigation title should match shared copy');
 expectIncludes('pages/explore/explore.json', COPY.forest.navTitle, 'Forest navigation title should match shared copy');
 expectIncludes('pages/login/login.json', COPY.login.navTitle, 'Login navigation title should match shared copy');
+expectIncludes('pages/login-auth/login-auth.json', COPY.loginAuth.navTitle, 'Login auth navigation title should match shared copy');
 expectIncludes('pages/settings/settings.json', COPY.settings.navTitle, 'Settings navigation title should match shared copy');
 expectIncludes('pages/profile/edit.json', COPY.profileEdit.navTitle, 'Profile edit navigation title should match shared copy');
 expectIncludes('pages/privacy/privacy.json', COPY.privacy.navTitle, 'Privacy navigation title should match shared copy');
@@ -29,6 +30,9 @@ expectIncludes('pages/medals/medals.json', COPY.medals.navTitle, 'Medals navigat
 expectIncludes('pages/login/login.wxml', '{{copy.heroTitle}}', 'Login page should render its hero title from shared copy');
 expectIncludes('pages/login/login.wxml', '{{copy.panelTitle}}', 'Login page should render its panel title from shared copy');
 expectIncludes('pages/login/login.wxml', '{{copy.actionLabel}}', 'Login page should render its action label from shared copy');
+expectIncludes('pages/login-auth/login-auth.wxml', '{{copy.heroTitle}}', 'Login auth page should render its hero title from shared copy');
+expectIncludes('pages/login-auth/login-auth.wxml', '{{copy.panelTitle}}', 'Login auth page should render its panel title from shared copy');
+expectIncludes('pages/login-auth/login-auth.wxml', '{{copy.actionLabel}}', 'Login auth page should render its action label from shared copy');
 
 expectIncludes('pages/settings/settings.wxml', '{{copy.heroTitle}}', 'Settings page should render its hero title from shared copy');
 expectIncludes('pages/profile/edit.wxml', 'copy.heroTitleFromLogin', 'Profile edit page should render the login-state hero copy from shared copy');

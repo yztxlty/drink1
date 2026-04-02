@@ -47,6 +47,7 @@ function createFallbackAppState() {
           lastQualifiedDateKey: ''
         },
         totals: {
+          today: 0,
           totalAmount: 0,
           totalRecords: 0,
           completedDays: 0,

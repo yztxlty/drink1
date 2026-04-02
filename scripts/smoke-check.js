@@ -98,6 +98,20 @@ function checkProjectConfig() {
   }
 }
 
+function checkPackageIgnoreConfig() {
+  const scriptPath = path.join(root, 'scripts/check-package-ignore.js');
+  if (!fs.existsSync(scriptPath)) {
+    addFailure('Missing package ignore regression check');
+    return;
+  }
+
+  try {
+    require(scriptPath);
+  } catch (error) {
+    addFailure(`Package ignore regression check failed: ${error.message}`);
+  }
+}
+
 function checkHomepageStructure() {
   const homeWxml = fs.readFileSync(path.join(root, 'pages/home/home.wxml'), 'utf8');
   const requiredMarkers = [
@@ -218,6 +232,20 @@ function checkForestPageClean() {
     require(scriptPath);
   } catch (error) {
     addFailure(`Forest page clean regression check failed: ${error.message}`);
+  }
+}
+
+function checkForestWaterRhythmGame() {
+  const scriptPath = path.join(root, 'scripts/check-forest-water-rhythm-game.js');
+  if (!fs.existsSync(scriptPath)) {
+    addFailure('Missing forest water rhythm game regression check');
+    return;
+  }
+
+  try {
+    require(scriptPath);
+  } catch (error) {
+    addFailure(`Forest water rhythm game regression check failed: ${error.message}`);
   }
 }
 
@@ -419,14 +447,16 @@ checkAppRoutes();
 checkCustomTabBar();
 checkLocalAssetRefs();
   checkProjectConfig();
+  checkPackageIgnoreConfig();
   checkHomepageStructure();
   checkHomeViewModel();
   checkHomeHydrationLogic();
   checkLoginAgreement();
   checkLoginHintRemoved();
-  checkProfilePageClean();
-  checkForestPageClean();
-  checkPageStatusBars();
+checkProfilePageClean();
+checkForestPageClean();
+checkForestWaterRhythmGame();
+checkPageStatusBars();
   checkCopyVocabulary();
   checkAuxiliaryCopy();
   checkProfileDashboardAndMedalAssets();

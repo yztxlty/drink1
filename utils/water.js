@@ -150,6 +150,7 @@ function buildDailySummaries(records, dailyTarget) {
   return {
     daily,
     totals: {
+      today: Number(((daily || {})[getTodayKey()] || {}).total) || 0,
       totalAmount,
       totalRecords: records.length,
       completedDays,

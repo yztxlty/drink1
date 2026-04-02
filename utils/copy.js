@@ -36,7 +36,36 @@ const COPY = {
   forest: {
     navTitle: '补水森林',
     statusTitle: '补水森林',
-    actionLabel: '去补水'
+    actionLabel: '去补水',
+    summaryRulesTitle: '计算规则',
+    summaryRulesTrigger: '计算规则',
+    summaryRules: [
+      '森林氧气浓度会根据今日补水达成情况动态计算。',
+      '融合进度会按当前水滴融合状态实时更新，初始水滴越多被融合掉，进度越高。',
+      '治愈水滴按今日补水量换算，每记录 50ml 补水生成 1 颗初始水滴。'
+    ]
+  },
+  forestWaterRhythm: {
+    navTitle: '森林水韵',
+    statusTitle: '森林水韵',
+    heroKicker: '互动小游戏',
+    heroTitle: '跟着节奏唤醒森林的呼吸',
+    heroDesc: '先把入口搭起来，后续可以接入节奏点击、连击奖励和解压动画。',
+    stageTitle: '节奏舞台',
+    stageHint: '当前为骨架模式，已预留互动位',
+    gameTitle: '森林水韵·噗噗乐',
+    gameSubtitle: '拖动晶透水滴，让它们在玻璃容器里轻轻融合',
+    energyLabel: '今日已收集 {{intake}}ml 能量水滴',
+    emptyHint: '多喝水才能产生治愈水滴哦',
+    rulesTitle: '玩法说明',
+    ruleItems: [
+      { key: 'tempo', title: '跟随节奏', subtitle: '先看清节拍，再开始点击' },
+      { key: 'combo', title: '积累连击', subtitle: '后续会围绕连击和奖励展开' },
+      { key: 'feedback', title: '解锁反馈', subtitle: '完成目标后再展示成长结果' }
+    ],
+    actionLabel: '开始体验',
+    resetLabel: '重置预览',
+    backLabel: '返回上一页'
   },
   login: {
     navTitle: '补水登录',
@@ -44,8 +73,15 @@ const COPY = {
     heroTitle: '欢迎来到喝水了吗',
     heroDesc: '把每一次补水都记录成可见的进步，让你的补水档案随着习惯一起生长。',
     panelTitle: '登录授权',
-    panelDesc: '授权后可同步补水记录、目标设置与勋章进度。',
+    panelDesc: '首次使用时，点击登录后先微信授权。',
     actionLabel: '微信同意并登录',
+    avatarTip: '点击选择微信头像',
+    nicknamePlaceholder: '请输入昵称',
+    consentTitle: '提示',
+    consentRequired: '请先阅读并同意隐私协议',
+    homeRedirectFailed: '进入首页失败，请重试',
+    profileRequired: '请完善头像和昵称',
+    authorizationPageFailed: '进入授权页失败，请重试',
     privacyLabel: '登录前请确认已阅读并同意',
     privacyLink: '《用户协议》',
     privacyJoiner: '与',
@@ -56,6 +92,19 @@ const COPY = {
     loginFailed: '补水登录失败，请重试',
     authFailed: '未完成补水授权',
     profileDesc: '用于展示你的补水档案'
+  },
+  loginAuth: {
+    navTitle: '微信资料授权',
+    heroKicker: '微信资料授权',
+    heroTitle: '完成头像与昵称授权后即可登录',
+    heroDesc: '为了展示你的补水档案，首次登录需要补充一次微信头像和昵称授权。',
+    panelTitle: '微信资料',
+    panelDesc: '授权完成后会同步到首页与我的页面展示。',
+    actionLabel: '完成授权并登录',
+    avatarTip: '点击选择微信头像',
+    nicknamePlaceholder: '请输入昵称',
+    profileRequired: '请完善头像和昵称',
+    homeRedirectFailed: '进入首页失败，请重试'
   },
   settings: {
     navTitle: '补水设置',

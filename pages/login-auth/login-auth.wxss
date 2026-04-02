@@ -1,0 +1,134 @@
+.login-auth-page {
+  min-height: 100vh;
+  justify-content: center;
+  padding: calc(env(safe-area-inset-top) + 48rpx) 40rpx 56rpx;
+}
+
+.orb-left {
+  top: 140rpx;
+  left: -40rpx;
+  width: 180rpx;
+  height: 180rpx;
+  background: rgba(71, 166, 247, 0.22);
+}
+
+.orb-right {
+  top: 460rpx;
+  right: -24rpx;
+  width: 220rpx;
+  height: 220rpx;
+  background: rgba(0, 241, 253, 0.22);
+}
+
+.login-auth-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  text-align: center;
+}
+
+.hero-kicker {
+  font-size: 24rpx;
+  font-weight: 700;
+  letter-spacing: 6rpx;
+  color: var(--primary);
+}
+
+.hero-title {
+  font-size: 56rpx;
+  line-height: 1.24;
+  font-weight: 800;
+  color: var(--on-surface);
+}
+
+.hero-desc {
+  font-size: 28rpx;
+  line-height: 1.75;
+  color: var(--on-surface-variant);
+}
+
+.login-auth-panel {
+  margin-top: 40rpx;
+  padding-top: 44rpx;
+  padding-bottom: 36rpx;
+}
+
+.panel-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+  margin-bottom: 32rpx;
+}
+
+.panel-title {
+  font-size: 34rpx;
+  font-weight: 700;
+}
+
+.panel-desc {
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: var(--on-surface-variant);
+}
+
+.avatar-picker {
+  width: 100%;
+  margin-bottom: 28rpx;
+  padding: 28rpx 24rpx;
+  border-radius: 28rpx;
+  border: 2rpx dashed rgba(71, 166, 247, 0.28);
+  background: rgba(255, 255, 255, 0.72);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18rpx;
+}
+
+.avatar-image,
+.avatar-placeholder {
+  width: 144rpx;
+  height: 144rpx;
+  border-radius: 50%;
+}
+
+.avatar-image {
+  overflow: hidden;
+  box-shadow: 0 16rpx 30rpx rgba(12, 53, 82, 0.1);
+}
+
+.avatar-placeholder {
+  background: linear-gradient(135deg, rgba(71, 166, 247, 0.18), rgba(0, 241, 253, 0.14));
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56rpx;
+  font-weight: 500;
+}
+
+.avatar-tip {
+  font-size: 24rpx;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.nickname-input {
+  height: 96rpx;
+  padding: 0 28rpx;
+  border-radius: 24rpx;
+  background: rgba(255, 255, 255, 0.78);
+  border: 2rpx solid rgba(71, 166, 247, 0.12);
+  font-size: 28rpx;
+  color: var(--on-surface);
+  box-sizing: border-box;
+}
+
+.wx-btn {
+  width: 100% !important;
+}

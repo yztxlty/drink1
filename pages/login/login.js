@@ -1,5 +1,7 @@
 const app = getApp()
 const { COPY } = require('../../utils/copy')
+const LOGIN_COPY = COPY.login
+const LOGIN_AUTH_PAGE = '/pages/login-auth/login-auth'
 
 function safeShowToast(title) {
   if (typeof wx === 'undefined' || typeof wx.showToast !== 'function') {
@@ -15,43 +17,28 @@ function safeShowToast(title) {
 function showConsentRequiredPrompt() {
   if (typeof wx !== 'undefined' && typeof wx.showModal === 'function') {
     wx.showModal({
-      title: '提示',
-      content: '请先阅读并同意隐私协议',
+      title: LOGIN_COPY.consentTitle,
+      content: LOGIN_COPY.consentRequired,
       showCancel: false
     })
     return
   }
 
-  safeShowToast('请先阅读并同意隐私协议')
-}
-
-function safeSetStorageSync(key, value) {
-  if (typeof wx === 'undefined' || typeof wx.setStorageSync !== 'function') {
-    return false
-  }
-
-  try {
-    wx.setStorageSync(key, value)
-    return true
-  } catch (error) {
-    return false
-  }
+  safeShowToast(LOGIN_COPY.consentRequired)
 }
 
 Page({
   data: {
-    copy: COPY.login,
+    copy: LOGIN_COPY,
     agreed: true,
     loading: false
   },
 
   onLoad() {
     this.store = app.globalData.store || null
-    this.loginInFlight = false
-    const deviceInfo = typeof wx !== 'undefined' && typeof wx.getDeviceInfo === 'function'
+    this.deviceInfo = typeof wx !== 'undefined' && typeof wx.getDeviceInfo === 'function'
       ? wx.getDeviceInfo()
       : {}
-    this.isDevTools = deviceInfo.platform === 'devtools'
     let loginViewModel = null
 
     try {
@@ -63,8 +50,7 @@ Page({
     }
 
     this.setData({
-      copy: COPY.login,
-      agreed: Boolean(loginViewModel ? loginViewModel.privacyAccepted : false)
+      copy: LOGIN_COPY
     })
   },
 
@@ -78,8 +64,81 @@ Page({
     })
   },
 
-  onLogin() {
-    if (this.loginInFlight || this.data.loading) {
+  onAgreementChange(e) {
+    const agreed = Array.isArray(e.detail.value) && e.detail.value.includes('agree')
+    this.setData({ agreed })
+    if (this.store && typeof this.store.updateSettings === 'function') {
+      this.store.updateSettings({ privacyAccepted: agreed })
+    }
+  },
+
+  getLoginViewModel() {
+    try {
+      return this.store && typeof this.store.getLoginViewModel === 'function'
+        ? this.store.getLoginViewModel()
+        : null
+    } catch (error) {
+      return null
+    }
+  },
+
+  resolveCachedWechatProfile(loginViewModel) {
+    const viewModel = loginViewModel || this.getLoginViewModel()
+    const profile = viewModel && viewModel.profile ? viewModel.profile : {}
+    const nickName = String(profile.wechatNickName || '').trim()
+    const avatarUrl = String(profile.wechatAvatarUrl || '').trim()
+
+    return {
+      nickName,
+      avatarUrl,
+      isReady: Boolean(nickName && avatarUrl)
+    }
+  },
+
+  completeLogin(wechatLoginCode, userInfo) {
+    try {
+      if (this.store && typeof this.store.setLoginProfile === 'function') {
+        this.store.setLoginProfile({
+          nickName: userInfo.nickName,
+          avatarUrl: userInfo.avatarUrl,
+          loginProvider: 'wechat',
+          code: wechatLoginCode
+        })
+      }
+
+      if (app.globalData && this.store && typeof this.store.getProfileViewModel === 'function') {
+        app.globalData.userInfo = this.store.getProfileViewModel().profile
+      }
+
+      if (typeof wx !== 'undefined' && typeof wx.switchTab === 'function') {
+        wx.switchTab({
+          url: '/pages/home/home',
+          fail: () => {
+            safeShowToast(LOGIN_COPY.homeRedirectFailed)
+          }
+        })
+      }
+    } finally {
+      this.setData({ loading: false })
+    }
+  },
+
+  goAuthorizeProfile() {
+    if (typeof wx === 'undefined' || typeof wx.navigateTo !== 'function') {
+      safeShowToast(LOGIN_COPY.authorizationPageFailed)
+      return
+    }
+
+    wx.navigateTo({
+      url: LOGIN_AUTH_PAGE,
+      fail: () => {
+        safeShowToast(LOGIN_COPY.authorizationPageFailed)
+      }
+    })
+  },
+
+  handleLogin() {
+    if (this.data.loading) {
       return
     }
 
@@ -88,170 +147,34 @@ Page({
       return
     }
 
-    this.startWechatLogin()
-  },
+    const loginViewModel = this.getLoginViewModel()
+    const cachedWechatProfile = this.resolveCachedWechatProfile(loginViewModel)
 
-  onAgreementChange(e) {
-    const agreed = Array.isArray(e.detail.value) && e.detail.value.includes('agree')
-    this.setPrivacyAccepted(agreed)
-  },
+    if (!cachedWechatProfile.isReady) {
+      this.goAuthorizeProfile()
+      return
+    }
 
-  setLoginState(nextState) {
-    this.loginInFlight = false
     this.setData({
-      loading: false
+      loading: true
     })
-  },
-
-  finishLogin(authInfo, options) {
-    const loginInfo = authInfo || {}
-    const extraOptions = options || {}
-    let currentStore = null
 
     try {
-      currentStore = this.store ? this.store.getStore() : null
-    } catch (error) {
-      currentStore = null
-    }
-
-    const currentUserId = currentStore && currentStore.user ? currentStore.user.userId : ''
-    const nextUserId = currentUserId && currentUserId !== 'local-user'
-      ? currentUserId
-      : `wx_local_${Date.now()}`
-
-    this.setData({ loading: true })
-    if (typeof wx !== 'undefined' && typeof wx.showLoading === 'function') {
-      wx.showLoading({
-        title: COPY.login.loginLoading,
-        mask: true
-      })
-    }
-
-    try {
-      if (this.store && typeof this.store.updateStore === 'function') {
-        this.store.updateStore({
-          user: {
-            userId: nextUserId,
-            nickName: loginInfo.nickName,
-            avatarUrl: loginInfo.avatarUrl,
-            loginProvider: extraOptions.loginProvider || 'wechat',
-            wechatLoginCode: loginInfo.loginCode,
-            isLoggedIn: true
-          },
-          config: {
-            privacyAccepted: true
-          }
-        })
-      }
-
-      if (app.globalData) {
-        try {
-          app.globalData.userInfo = this.store ? this.store.getProfileViewModel().profile : loginInfo
-        } catch (error) {
-          app.globalData.userInfo = loginInfo
-        }
-
-        try {
-          app.globalData.appState = this.store ? this.store.getStore() : app.globalData.appState
-        } catch (error) {}
-      }
-
-      safeSetStorageSync('drink_auth_state', {
-        isLoggedIn: true,
-        loginProvider: extraOptions.loginProvider || 'wechat',
-        loginCode: loginInfo.loginCode || '',
-        lastLoginAt: new Date().toISOString()
-      })
-
-      if (typeof wx !== 'undefined' && typeof wx.switchTab === 'function') {
-        wx.switchTab({
-          url: '/pages/home/home',
-          fail: () => {
-            safeShowToast('进入首页失败，请重试')
-          }
-        })
-      }
-    } finally {
-      if (typeof wx !== 'undefined' && typeof wx.hideLoading === 'function') {
-        wx.hideLoading()
-      }
-      this.setLoginState()
-    }
-  },
-
-  loginWithFallback() {
-    this.finishLogin({
-      nickName: '补水计划用户',
-      avatarUrl: '',
-      loginCode: ''
-    }, {
-      loginProvider: 'wechat'
-    })
-  },
-
-  setPrivacyAccepted(agreed) {
-    const nextAgreed = Boolean(agreed)
-    this.setData({ agreed: nextAgreed })
-    safeSetStorageSync('drink_privacy_ack', nextAgreed)
-    if (this.store) {
-      try {
-        this.store.updateSettings({ privacyAccepted: nextAgreed })
-      } catch (error) {}
-    }
-  },
-
-  startWechatLogin() {
-    this.loginInFlight = true
-
-    try {
-      if (typeof wx === 'undefined' || !wx.getUserProfile || !wx.login) {
-        if (this.isDevTools) {
-          this.loginWithFallback()
-          return
-        }
-
-        safeShowToast(COPY.login.loginUnsupported)
-        this.setLoginState()
+      if (typeof wx === 'undefined' || typeof wx.login !== 'function') {
+        this.completeLogin('', cachedWechatProfile)
         return
       }
 
-      wx.getUserProfile({
-        desc: COPY.login.profileDesc,
-        success: (profileRes) => {
-          const userInfo = profileRes.userInfo || {}
-          wx.login({
-            success: (loginRes) => {
-              this.finishLogin({
-                nickName: userInfo.nickName || '',
-                avatarUrl: userInfo.avatarUrl || '',
-                loginCode: loginRes.code || ''
-              })
-            },
-            fail: () => {
-              safeShowToast(COPY.login.loginFailed)
-              this.setLoginState()
-            }
-          })
+      wx.login({
+        success: (loginRes) => {
+          this.completeLogin((loginRes && loginRes.code) || '', cachedWechatProfile)
         },
-        fail: (err) => {
-          const errMsg = err && err.errMsg ? err.errMsg : ''
-          if (this.isDevTools || errMsg.includes('not supported')) {
-            this.loginWithFallback()
-            return
-          }
-
-          safeShowToast(COPY.login.authFailed)
-          this.setLoginState()
+        fail: () => {
+          this.completeLogin('', cachedWechatProfile)
         }
       })
     } catch (error) {
-      if (this.isDevTools) {
-        this.loginWithFallback()
-        return
-      }
-
-      safeShowToast(COPY.login.loginUnsupported)
-      this.setLoginState()
+      this.completeLogin('', cachedWechatProfile)
     }
-  },
+  }
 })

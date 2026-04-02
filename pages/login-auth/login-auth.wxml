@@ -1,0 +1,41 @@
+<scroll-view class="scrollarea" scroll-y>
+  <view class="container login-auth-page">
+    <view class="floating-orb orb-left"></view>
+    <view class="floating-orb orb-right"></view>
+
+    <view class="login-auth-hero">
+      <text class="hero-kicker">{{copy.heroKicker}}</text>
+      <text class="hero-title">{{copy.heroTitle}}</text>
+      <text class="hero-desc">{{copy.heroDesc}}</text>
+    </view>
+
+    <view class="login-auth-panel glass-card">
+      <view class="panel-row">
+        <text class="panel-title">{{copy.panelTitle}}</text>
+        <text class="panel-desc">{{copy.panelDesc}}</text>
+      </view>
+
+      <button
+        class="avatar-picker"
+        open-type="chooseAvatar"
+        bindchooseavatar="onChooseAvatar"
+      >
+        <view wx:if="{{!userInfo.avatarUrl}}" class="avatar-placeholder">+</view>
+        <image wx:else class="avatar-image" src="{{userInfo.avatarUrl}}" mode="aspectFill" />
+        <text class="avatar-tip">{{copy.avatarTip}}</text>
+      </button>
+
+      <view class="login-form">
+        <input
+          class="nickname-input"
+          type="nickname"
+          placeholder="{{copy.nicknamePlaceholder}}"
+          value="{{userInfo.nickName}}"
+          bindinput="onNicknameChange"
+          bindblur="onNicknameChange"
+        />
+        <button class="primary-btn wx-btn" loading="{{loading}}" disabled="{{loading}}" bindtap="handleAuthorize">{{copy.actionLabel}}</button>
+      </view>
+    </view>
+  </view>
+</scroll-view>

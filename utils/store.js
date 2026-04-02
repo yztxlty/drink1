@@ -80,6 +80,7 @@ function buildDefaultState() {
         lastQualifiedDateKey: ''
       },
       totals: {
+        today: 0,
         totalAmount: 0,
         totalRecords: 0,
         completedDays: 0,
@@ -789,9 +790,15 @@ function markPrivacyAccepted(accepted) {
 
 function getLoginViewModel() {
   const state = ensureState();
+  const profile = resolveProfile(state.profile);
 
   return {
-    profile: clone(resolveProfile(state.profile)),
+    profile: clone(profile),
+    userInfo: {
+      nickName: profile.displayNickName || '',
+      avatarUrl: profile.displayAvatarUrl || '',
+      motto: profile.motto || ''
+    },
     privacyAccepted: state.settings.privacyAccepted,
     isLoggedIn: state.profile.isLoggedIn
   };
@@ -860,33 +867,92 @@ function updateProfile(partialProfile) {
     const nextProfile = {
       ...state.profile
     };
+    const shouldSyncWechatProfile = incoming.loginProvider === 'wechat' || incoming.syncWechatProfile === true;
+    const hasWechatNickName = Object.prototype.hasOwnProperty.call(incoming, 'wechatNickName');
+    const hasWechatAvatarUrl = Object.prototype.hasOwnProperty.call(incoming, 'wechatAvatarUrl');
+    const nextWechatNickName = hasWechatNickName ? String(incoming.wechatNickName || '').trim() : '';
+    const nextWechatAvatarUrl = hasWechatAvatarUrl ? String(incoming.wechatAvatarUrl || '').trim() : '';
 
-    if (Object.prototype.hasOwnProperty.call(incoming, 'nickName')) {
+    if (Object.prototype.hasOwnProperty.call(incoming, 'nickName') || hasWechatNickName) {
       const nextNickName = String(incoming.nickName || '').trim();
-      nextProfile.customNickName = nextNickName;
-      nextProfile.nicknameCustomized = nextNickName.length > 0;
-      nextProfile.customProfileLocked = nextProfile.nicknameCustomized || nextProfile.avatarCustomized || Boolean(nextProfile.customProfileLocked);
-      nextProfile.nickName = nextProfile.nicknameCustomized
-        ? nextNickName
-        : (nextProfile.wechatNickName || DEFAULT_PROFILE.nickName);
+      const resolvedWechatNickName = nextWechatNickName || nextNickName;
+      if (shouldSyncWechatProfile && nextNickName) {
+        nextProfile.wechatNickName = resolvedWechatNickName;
+        nextProfile.customNickName = '';
+        nextProfile.nicknameCustomized = false;
+        nextProfile.customProfileLocked = Boolean(nextProfile.avatarCustomized);
+        nextProfile.nickName = resolvedWechatNickName;
+      } else if (shouldSyncWechatProfile && resolvedWechatNickName) {
+        nextProfile.wechatNickName = resolvedWechatNickName;
+        nextProfile.customNickName = '';
+        nextProfile.nicknameCustomized = false;
+        nextProfile.customProfileLocked = Boolean(nextProfile.avatarCustomized);
+        nextProfile.nickName = resolvedWechatNickName;
+      } else {
+        nextProfile.customNickName = nextNickName;
+        nextProfile.nicknameCustomized = nextNickName.length > 0;
+        nextProfile.customProfileLocked = nextProfile.nicknameCustomized || nextProfile.avatarCustomized || Boolean(nextProfile.customProfileLocked);
+        nextProfile.nickName = nextProfile.nicknameCustomized
+          ? nextNickName
+          : (nextProfile.wechatNickName || DEFAULT_PROFILE.nickName);
+      }
     }
 
-    if (Object.prototype.hasOwnProperty.call(incoming, 'avatarUrl')) {
+    if (Object.prototype.hasOwnProperty.call(incoming, 'avatarUrl') || hasWechatAvatarUrl) {
       const nextAvatarUrl = String(incoming.avatarUrl || '').trim();
-      nextProfile.customAvatarUrl = nextAvatarUrl;
-      nextProfile.avatarCustomized = nextAvatarUrl.length > 0;
-      nextProfile.customProfileLocked = nextProfile.nicknameCustomized || nextProfile.avatarCustomized || Boolean(nextProfile.customProfileLocked);
-      nextProfile.avatarUrl = nextProfile.avatarCustomized
-        ? nextAvatarUrl
-        : (nextProfile.wechatAvatarUrl || '');
+      const resolvedWechatAvatarUrl = nextWechatAvatarUrl || nextAvatarUrl;
+      if (shouldSyncWechatProfile && nextAvatarUrl) {
+        nextProfile.wechatAvatarUrl = resolvedWechatAvatarUrl;
+        nextProfile.customAvatarUrl = '';
+        nextProfile.avatarCustomized = false;
+        nextProfile.customProfileLocked = Boolean(nextProfile.nicknameCustomized);
+        nextProfile.avatarUrl = resolvedWechatAvatarUrl;
+      } else if (shouldSyncWechatProfile && resolvedWechatAvatarUrl) {
+        nextProfile.wechatAvatarUrl = resolvedWechatAvatarUrl;
+        nextProfile.customAvatarUrl = '';
+        nextProfile.avatarCustomized = false;
+        nextProfile.customProfileLocked = Boolean(nextProfile.nicknameCustomized);
+        nextProfile.avatarUrl = resolvedWechatAvatarUrl;
+      } else {
+        nextProfile.customAvatarUrl = nextAvatarUrl;
+        nextProfile.avatarCustomized = nextAvatarUrl.length > 0;
+        nextProfile.customProfileLocked = nextProfile.nicknameCustomized || nextProfile.avatarCustomized || Boolean(nextProfile.customProfileLocked);
+        nextProfile.avatarUrl = nextProfile.avatarCustomized
+          ? nextAvatarUrl
+          : (nextProfile.wechatAvatarUrl || '');
+      }
     }
 
     if (Object.prototype.hasOwnProperty.call(incoming, 'motto')) {
       nextProfile.motto = String(incoming.motto || '').trim() || DEFAULT_PROFILE.motto;
     }
 
+    if (Object.prototype.hasOwnProperty.call(incoming, 'wechatLoginCode')) {
+      nextProfile.wechatLoginCode = String(incoming.wechatLoginCode || '').trim();
+    }
+
+    if (Object.prototype.hasOwnProperty.call(incoming, 'loginProvider') && incoming.loginProvider) {
+      nextProfile.loginProvider = incoming.loginProvider;
+    }
+
+    if (incoming.isLoggedIn === true || incoming.loginProvider === 'wechat') {
+      nextProfile.isLoggedIn = true;
+      nextProfile.lastLoginAt = nowIsoString();
+    }
+
     nextProfile.updatedAt = nowIsoString();
     state.profile = normalizeProfile(nextProfile);
+
+    // 登录页只负责收集资料，微信资料缓存应由 store 统一持久化，避免页面层越过状态层直接写本地存储。
+    if (shouldSyncWechatProfile && (nextProfile.wechatNickName || nextProfile.wechatAvatarUrl || nextProfile.wechatLoginCode)) {
+      writeStorage(WECHAT_PROFILE_KEY, {
+        nickName: nextProfile.wechatNickName,
+        avatarUrl: nextProfile.wechatAvatarUrl,
+        loginCode: nextProfile.wechatLoginCode,
+        updatedAt: nextProfile.updatedAt
+      });
+    }
+
     return state;
   });
 }

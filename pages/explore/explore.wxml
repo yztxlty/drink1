@@ -7,11 +7,12 @@
       subtitle="{{statusBar.subtitle}}"
       metricValue="{{statusBar.metricValue}}"
       metricLabel="{{statusBar.metricLabel}}"
-      actionLabel="{{statusBar.actionLabel}}"
+      actionLabel=""
       bindaction="navHome"
     />
 
     <view class="forest-summary soft-panel">
+      <view class="summary-rules-trigger" bindtap="showSummaryRules">{{summaryRulesTrigger}}</view>
       <view class="oxygen-info">
         <view class="oxygen-icon">O2</view>
         <view class="oxygen-meta">
@@ -21,31 +22,51 @@
       </view>
       <view class="summary-stack">
         <view class="summary-pill summary-pill-primary">{{collectionLabel}}</view>
-        <text class="summary-caption">藏品进度</text>
+        <text class="summary-caption">融合进度</text>
       </view>
       <view class="summary-stack">
-        <view class="summary-pill summary-pill-success">Lv.{{forestLevel}}</view>
-        <text class="summary-caption">森林等级</text>
+        <view class="summary-pill summary-pill-success">{{dropCount}} 颗</view>
+        <text class="summary-caption">治愈水滴</text>
       </view>
     </view>
 
     <view class="forest-stage">
       <view class="stage-glow"></view>
       <view class="grid-bg"></view>
-      <view class="terrain terrain-left"></view>
-      <view class="terrain terrain-right"></view>
 
-      <view class="plants-layout">
-        <view class="plant-spot plant-{{index}}" wx:for="{{plants}}" wx:key="id">
-          <view class="plant-aura"></view>
-          <view class="plant-entity">
-            <view class="leaf leaf-left"></view>
-            <view class="leaf leaf-center"></view>
-            <view class="leaf leaf-right"></view>
-          </view>
-          <text class="plant-name">{{item.name}}</text>
-          <text class="lv-badge">LV.{{item.level}}</text>
+      <view class="stage-head">
+        <view>
+          <text class="section-title">{{gameCopy.gameTitle}}</text>
+          <text class="section-subtitle">{{gameCopy.gameSubtitle}}</text>
         </view>
+        <view class="stage-chip">Lv.{{forestLevel}}</view>
+      </view>
+
+      <view class="energy-status">{{intakeEnergyLabel}}</view>
+
+      <view class="vessel-container">
+        <view class="vessel-glow vessel-glow-top"></view>
+        <view class="vessel-glow vessel-glow-bottom"></view>
+        <view class="vessel-mist"></view>
+
+        <block wx:if="{{drops.length}}">
+          <block wx:for="{{drops}}" wx:key="id">
+            <view
+              class="water-drop {{item.isMerging ? 'merging' : ''}} {{item.isDragging ? 'dragging' : ''}}"
+              style="left:{{item.x}}px; top:{{item.y}}px; width:{{item.size}}px; height:{{item.size}}px; background:{{item.color}};"
+              data-id="{{item.id}}"
+              catchtouchstart="touchStart"
+              catchtouchmove="touchMove"
+              catchtouchend="touchEnd"
+              catchtouchcancel="touchEnd"
+            >
+              <view class="highlight"></view>
+              <view class="drop-core"></view>
+            </view>
+          </block>
+        </block>
+
+        <view wx:else class="vessel-empty">{{gameCopy.emptyHint}}</view>
       </view>
 
       <view class="stage-caption">{{forestStatusHint}}</view>
@@ -54,19 +75,19 @@
     <view class="achievement-overview glass-card">
       <view class="overview-head">
         <view>
-          <text class="section-title">守护进度</text>
-          <text class="section-subtitle">氧气、藏品和勋章会随着补水持续增长</text>
+          <text class="section-title">{{gameCopy.rulesTitle}}</text>
+          <text class="section-subtitle">{{reminderText}}</text>
         </view>
       </view>
 
       <view class="forest-metrics">
         <view class="metric-block">
-          <text class="metric-value">{{oxygenValue}}</text>
-          <text class="metric-label">当前氧气</text>
+          <text class="metric-value">{{todayTotal}} ml</text>
+          <text class="metric-label">今日已收集</text>
         </view>
         <view class="metric-block">
-          <text class="metric-value">{{collectionProgress}}%</text>
-          <text class="metric-label">藏品进度</text>
+          <text class="metric-value">{{todayRemaining}} ml</text>
+          <text class="metric-label">距离目标</text>
         </view>
         <view class="metric-block">
           <text class="metric-value">{{unlockedMedalCount}}</text>
@@ -79,22 +100,22 @@
       <view class="overview-head">
         <view>
           <text class="section-title">今日守护</text>
-          <text class="section-subtitle">{{reminderText}}</text>
+          <text class="section-subtitle">每 50ml 会生成一颗初始水滴，拖动后可在容器内融合成长</text>
         </view>
       </view>
 
       <view class="forest-status-card">
         <view class="forest-row">
-          <text class="forest-row-label">今日总补水</text>
-          <text class="forest-row-value">{{todayTotal}} ml</text>
+          <text class="forest-row-label">融合规则</text>
+          <text class="forest-row-value forest-row-value-compact">当两个水滴中心距离小于半径之和时，会自动吞噬并放大</text>
         </view>
         <view class="forest-row">
-          <text class="forest-row-label">今日还需补水</text>
-          <text class="forest-row-value">{{todayRemaining}} ml</text>
+          <text class="forest-row-label">交互反馈</text>
+          <text class="forest-row-value forest-row-value-compact">融合时触发震动与清脆 pop 音效，营造 Q 弹反馈</text>
         </view>
         <view class="forest-row">
-          <text class="forest-row-label">守护提示</text>
-          <text class="forest-row-value forest-row-value-compact">{{forestStatusHint}}</text>
+          <text class="forest-row-label">继续补水</text>
+          <text class="forest-row-value forest-row-value-compact">想要更多水滴，就先回首页再记录新的补水量</text>
         </view>
       </view>
 

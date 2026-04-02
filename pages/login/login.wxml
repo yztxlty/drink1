@@ -27,7 +27,7 @@
         <text class="panel-desc">{{copy.panelDesc}}</text>
       </view>
 
-      <button class="primary-btn wx-btn" bindtap="onLogin" loading="{{loading}}" disabled="{{loading}}">{{copy.actionLabel}}</button>
+      <button class="primary-btn wx-btn" loading="{{loading}}" disabled="{{loading}}" bindtap="handleLogin">{{copy.actionLabel}}</button>
 
       <view class="privacy-note">
         <checkbox-group bindchange="onAgreementChange">

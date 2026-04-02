@@ -49,6 +49,16 @@ assert.strictEqual(
   'Forest page should render the shared top status strip'
 );
 assert.strictEqual(
+  forestWxml.includes('actionLabel="{{statusBar.actionLabel}}"'),
+  false,
+  'Forest page should not render the top-right CTA from the status strip'
+);
+assert.strictEqual(
+  forestWxml.includes('actionLabel=""'),
+  true,
+  'Forest page should explicitly hide the top-right status strip CTA'
+);
+assert.strictEqual(
   forestWxml.includes('{{collectionLabel}}'),
   true,
   'Forest page should render the collection label'
@@ -77,6 +87,16 @@ assert.strictEqual(
   forestWxml.includes('forest-header'),
   false,
   'Forest page should remove the old header block'
+);
+assert.strictEqual(
+  forestWxml.includes('terrain terrain-left'),
+  false,
+  'Forest page should remove the left green terrain layer from the water-drop stage'
+);
+assert.strictEqual(
+  forestWxml.includes('terrain terrain-right'),
+  false,
+  'Forest page should remove the right green terrain layer from the water-drop stage'
 );
 assert.strictEqual(
   forestJs.includes('reminderText'),
