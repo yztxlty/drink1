@@ -11,7 +11,7 @@ const MENU_ROUTES = {
 }
 const CONTACT_MENU_ITEM = {
   key: 'contact',
-  title: '加入 Drink1 社群',
+  title: '加入 喝水了吗 社群',
   subtitle: '扫码添加作者微信，一起把喝水习惯坚持下去'
 }
 const LINE_Y_TO_X_RATIO = 0.42
